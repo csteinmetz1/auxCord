@@ -23,12 +23,12 @@
 				</a>
 			</h1>
 		</div>
-			
+
 		<!-- Login Button -->
 			<div class="form" >
 					<form action="/aux_sync">
 						Enter aux ID<br>
-						<input type="text" name="Enter aux ID" value="" size="8" >
+						<input type="text" name="Enter aux ID" value="" size="8" onkeyup="this.value = this.value.replace(/[^0-9]/, '')" maxlength="4">
 						<br><br>
 						<input class="button" type="submit" value="Submit">
 					</form>
@@ -37,7 +37,7 @@
 			<p class="desc" >
 					Enter a 4-digit code to join an existing aux.
 			</p>
-			
+
 
 		</body>
 
