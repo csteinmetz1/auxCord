@@ -5,8 +5,8 @@ body {
 	color: white;
 }
 .headText {
-		margin-top: 5%;
-		text-align: center;
+	margin-top: 5%;
+	text-align: center;
 }
 .loginButton {
 		text-align: center;
@@ -63,12 +63,12 @@ img {
 }
 
 input {
-    padding: 12px 12px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border: none;
-    background-color: rgb(241, 115, 109);
-		color: white;
-		font-size: 24px;
-		text-align: center;
+  padding: 12px 12px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: none;
+  background-color: rgb(241, 115, 109);
+	color: white;
+	font-size: 24px;
+	text-align: center;
 }
