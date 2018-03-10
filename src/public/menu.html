@@ -8,11 +8,15 @@
 			<link rel="stylesheet" href="css/auxCord.css">
 
 			<script type="text/javascript">
-				function login() {location.href = '/login'}
+				function create() {location.href = '../views/create'}
+			</script>
+
+			<script type="text/javascript">
+				function join() {location.href = '/join'}
 			</script>
 
 			<meta charset="UTF-8">
-			<title>auxCord</title>
+			<title>auxCord Menu</title>
 
 		</head>
 
@@ -27,7 +31,9 @@
 			
 		<!-- Login Button -->
 			<div class="loginButton" >
-					<button type="button" onclick="login()" >Login</button>
+					<button type="button" onclick="create()" >Create</button>
+					<br>
+					<button type="button" onclick="join()">Join</button>
 			</div>
 
 		</body>

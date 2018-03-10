@@ -4,17 +4,32 @@
  * March 10, 2018
  */
 
+// core backend framework
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
-
+var session = require('client-sessions'); // store user data in cookies
 var fs = require('fs'); // filesystem 
+var SpotifyWebApi = require('spotify-web-api-node'); // library for spotify endpoints
+var socket = require('socket.io'); // sockect connection to clients 
+var bodyparser = require('body-parser'); // parse those bodies
+
+/////////// MAKE SURE YOU HAVE THIS FILE /////////
 var keys = require('./keys'); // Spotify API keys
 
-var client_id = 'CLIENT_ID'; // Your client id
-var client_secret = 'CLIENT_SECRET'; // Your secret
-var redirect_uri = 'REDIRECT_URI'; // Your redirect uri
+// Set API keys for custom resquests
+var client_id = keys.client_id;
+var client_secret = keys.client_secret;
+var redirect_uri = keys.redirect_uri;
+
+// Set API keys for the library 
+var spotifyApi = new SpotifyWebApi({
+  clientId : keys.client_id,
+  clientSecret : keys.client_id,
+  redirectUri : keys.client_id
+});
+////////////////////////////////////////////////////
 
 /**
  * Generates a random string containing numbers and letters
@@ -34,9 +49,18 @@ var generateRandomString = function(length) {
 var stateKey = 'spotify_auth_state';
 
 var app = express();
+app.set('view engine', 'ejs'); // setup ejs templating 
 
 app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
+
+// setup session cookie
+app.use(session({
+  session: 'access_token',
+  secret: 'random_string_goes_here',
+  duration: 30 * 60 * 1000,
+  activeDuration: 5 * 60 * 1000,
+}));
 
 app.get('/login', function(req, res) {
 
@@ -96,17 +120,10 @@ app.get('/callback', function(req, res) {
           json: true
         };
 
-        // use the access token to access the Spotify Web API
-        request.get(options, function(error, response, body) {
-          console.log(body);
-        });
-
-        // we can also pass the token to the browser to make requests from there
-        res.redirect('/#' +
-          querystring.stringify({
-            access_token: access_token,
-            refresh_token: refresh_token
-          }));
+        req.access_token = access_token; // set cookie
+        spotifyApi.setAccessToken(access_token); // set library token
+        console.log("Authenticated user.");
+        res.redirect('/menu.html')
       } else {
         res.redirect('/#' +
           querystring.stringify({
@@ -115,6 +132,18 @@ app.get('/callback', function(req, res) {
       }
     });
   }
+});
+
+app.get('/create', function(req, res) {
+
+});
+
+app.get('/join', function(req, res) {
+  res.redirect('/join.html');
+});
+
+app.post('/aux-sync', function(req, res) {
+  
 });
 
 app.get('/refresh_token', function(req, res) {
@@ -141,5 +170,22 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-console.log('Listening on 8888');
+///////////////////////////////////////////
+//  Custom Methods
+///////////////////////////////////////////
+var getUsersTopTracks = function(access_token, term) {
+  var options = {
+    url: 'https://api.spotify.com/v1/me',
+    headers: { 'Authorization': 'Bearer ' + access_token },
+    json: true
+  };
+  return new Promise(function(resolve, reject){
+    request.get(options, function(error, response, body) {
+    
+    });
+  })
+
+}
+
+console.log('auxCord listening on 8888');
 app.listen(8888);
