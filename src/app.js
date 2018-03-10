@@ -11,7 +11,7 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var session = require('client-sessions'); // store user data in cookies
 var fs = require('fs'); // filesystem 
-var spotifyApi = require('spotify-web-api-node'); // library for spotify endpoints
+var SpotifyWebApi = require('spotify-web-api-node'); // library for spotify endpoints
 var socket = require('socket.io'); // sockect connection to clients 
 var bodyparser = require('body-parser'); // parse those bodies
 
@@ -128,6 +128,7 @@ app.get('/callback', function(req, res) {
         req.session.access_token = access_token; // set cookie
         spotifyApi.setAccessToken(access_token); // set library token
         console.log("Authenticated user.");
+        res.redirect('/menu.html')
 
         // we can also pass the token to the browser to make requests from there
         res.redirect('/#' +
@@ -186,6 +187,5 @@ app.get('/refresh_token', function(req, res) {
 ///////////////////////////////////////////
 
 
-
-console.log('auxCord listening on 80');
-app.listen(80);
+console.log('auxCord listening on 8888');
+app.listen(8888);
