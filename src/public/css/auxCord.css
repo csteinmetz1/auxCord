@@ -5,14 +5,14 @@ body {
 	color: white;
 }
 .headText {
-    margin-top: 10%;
-    text-align: center;
+		margin-top: 5%;
+		text-align: center;
 }
 .loginButton {
 		text-align: center;
 }
 img {
-	width: 300px;
+	width: 500px;
 	height: 300px;
 }
 
@@ -27,7 +27,7 @@ img {
 	font-size: 24px;
 	-webkit-transition-duration: 0.4s; /* Safari */
 	transition-duration: 0.4s;
-	font-weight: normal;
+	font-weight: lighter;
 }
 
 .button2 {
@@ -40,7 +40,8 @@ img {
 	display: inline-block;
 	font-size: 24px;
 	-webkit-transition-duration: 0.4s; /* Safari */
-  transition-duration: 0.4s;
+	transition-duration: 0.4s;
+	font-weight: lighter;
 }
 
 .button:hover {
@@ -55,4 +56,19 @@ img {
 .desc {
 	font-weight: lighter;
 	font-size: 20px;
+}
+
+.form {
+	font-weight: lighter;
+}
+
+input {
+    padding: 12px 12px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    background-color: rgb(241, 115, 109);
+		color: white;
+		font-size: 24px;
+		text-align: center;
 }
