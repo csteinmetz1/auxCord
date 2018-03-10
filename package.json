@@ -1,12 +1,21 @@
 {
   "author": "Christian Steinmetz",
-  "name": "auxCord",
+  "name": "auxcord",
   "description": "",
-  "version": "0.1",
+  "version": "0.0.1",
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "client-sessions": "^0.8.0",
     "cookie-parser": "1.3.2",
     "express": "~4.16.0",
     "querystring": "~0.2.0",
-    "request": "~2.83.0"
-  }
+    "request": "~2.83.0",
+    "socket.io": "^2.0.4",
+    "spotify-web-api-node": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/csteinmetz1/auxCord"
+  },
+  "license": "SEE LICENSE IN LICENSE"
 }
