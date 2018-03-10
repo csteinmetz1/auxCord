@@ -56,7 +56,7 @@ app.use(express.static(__dirname + '/public'))
 
 // setup session cookie
 app.use(session({
-  access_token: 'access_token',
+  session: 'access_token',
   secret: 'random_string_goes_here',
   duration: 30 * 60 * 1000,
   activeDuration: 5 * 60 * 1000,
@@ -120,22 +120,10 @@ app.get('/callback', function(req, res) {
           json: true
         };
 
-        // use the access token to access the Spotify Web API
-        request.get(options, function(error, response, body) {
-          console.log(body);
-        });
-
-        req.session.access_token = access_token; // set cookie
+        req.access_token = access_token; // set cookie
         spotifyApi.setAccessToken(access_token); // set library token
         console.log("Authenticated user.");
         res.redirect('/menu.html')
-
-        // we can also pass the token to the browser to make requests from there
-        res.redirect('/#' +
-          querystring.stringify({
-            access_token: access_token,
-            refresh_token: refresh_token
-          }));
       } else {
         res.redirect('/#' +
           querystring.stringify({
@@ -185,7 +173,19 @@ app.get('/refresh_token', function(req, res) {
 ///////////////////////////////////////////
 //  Custom Methods
 ///////////////////////////////////////////
+var getUsersTopTracks = function(access_token, term) {
+  var options = {
+    url: 'https://api.spotify.com/v1/me',
+    headers: { 'Authorization': 'Bearer ' + access_token },
+    json: true
+  };
+  return new Promise(function(resolve, reject){
+    request.get(options, function(error, response, body) {
+    
+    });
+  })
 
+}
 
 console.log('auxCord listening on 8888');
 app.listen(8888);
