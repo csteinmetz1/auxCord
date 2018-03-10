@@ -1,7 +1,74 @@
+body {
+	background-color: #FA574D;
+	font-family: 'Roboto', Helvetica, Arial;
+	text-align: center;
+	color: white;
+}
 .headText {
-    margin-top: 20%;
-    text-align: center;
+		margin-top: 5%;
+		text-align: center;
 }
 .loginButton {
+		text-align: center;
+}
+img {
+	width: 500px;
+	height: 300px;
+}
+
+.button {
+	background-color: #FA574D; /* Green */
+	border: 2px solid white;
+	color: white;
+	padding: 16px 42px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 24px;
+	-webkit-transition-duration: 0.4s; /* Safari */
+	transition-duration: 0.4s;
+	font-weight: lighter;
+}
+
+.button2 {
+	background-color: #FA574D; /* Green */
+	border: 2px solid white;
+	color: white;
+	padding: 16px 54.5px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 24px;
+	-webkit-transition-duration: 0.4s; /* Safari */
+	transition-duration: 0.4s;
+	font-weight: lighter;
+}
+
+.button:hover {
+	background-color: rgb(241, 115, 109); /* Green */
+	color: white;
+}
+.button2:hover {
+	background-color: rgb(241, 115, 109); /* Green */
+	color: white;
+}
+
+.desc {
+	font-weight: lighter;
+	font-size: 20px;
+}
+
+.form {
+	font-weight: lighter;
+}
+
+input {
+    padding: 12px 12px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    background-color: rgb(241, 115, 109);
+		color: white;
+		font-size: 24px;
 		text-align: center;
 }
