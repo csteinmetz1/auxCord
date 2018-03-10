@@ -6,9 +6,10 @@
 
 			<!-- Style related links -->
 			<link rel="stylesheet" href="css/auxCord.css">
+			<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">
 
 			<script type="text/javascript">
-				function create() {location.href = '../views/create'}
+				function create() {location.href = '/create'}
 			</script>
 
 			<script type="text/javascript">
@@ -16,7 +17,7 @@
 			</script>
 
 			<meta charset="UTF-8">
-			<title>auxCord Menu</title>
+			<title>Menu auxCord</title>
 
 		</head>
 
@@ -24,16 +25,21 @@
 		<body>
 		<!-- Header 1 -->
 		<div class="headText" >
-			<h1>
-					auxCord
-				</h1>
+			<a href="index.html" >
+				<img src="svg/logo_white.svg">
+			</a>
 		</div>
 			
 		<!-- Login Button -->
 			<div class="loginButton" >
-					<button type="button" onclick="create()" >Create</button>
+					<button class="button" type="btn"  onclick="create()" >
+						Create
+					</button>
 					<br>
-					<button type="button" onclick="join()">Join</button>
+					<br>
+					<button class="button2" class="button" type="btn" onclick="join()" >
+						Join
+					</button>
 			</div>
 
 		</body>
