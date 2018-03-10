@@ -58,6 +58,11 @@ img {
 	font-size: 20px;
 }
 
+h1 {
+	font-weight: lighter;
+}
+
+
 .form {
 	font-weight: lighter;
 
@@ -76,4 +81,5 @@ input {
 	color: white;
 	font-size: 24px;
 	text-align: center;
+	font-weight: lighter;
 }
