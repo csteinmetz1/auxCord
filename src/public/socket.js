@@ -1,19 +1,22 @@
-//var socket = io.connect('http://localhost:8888');
-
+var socket = io.connect('http://localhost:8888');
 
 //btn.addEventListener('submit',);
 
+// 
+socket.on('done', function(data){
+    
+})
 
+
+/*
 function rewrite() {
+    document.getElementById('demo').innerHTML('please just do something');
     var ifrm = document.createElement('iframe');
     ifrm.setAttribute('src','reponse');
-    var remove1 = document.getElementById('remove1');
-    remove1.parentNode.removeChild(remove1);
-    var remove2 = document.getElementById('remove2');
-    remove2.parentNode.removeChild(remove2);
+    var remove = document.getElementById('remove');
     var replace = document.getElementById('replace');
     replace.parentNode.insertBefore(ifrm, replace);
-    document.getElementById('replace').innerHTML = "Playlist generated!"
 }
 
 rewrite();
+*/
