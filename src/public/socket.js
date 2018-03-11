@@ -7,11 +7,10 @@ socket.on('done', function(data){
     ifrm.setAttribute('height','380');
     ifrm.setAttribute('frameborder','0');
     ifrm.setAttribute('allowtransparency','true');
-    var remove1 = document.getElementById('remove1');
-    remove1.parentNode.removeChild(remove1);
+    document.getElementById('remove1').innerHTML = "aux Synchronized"
     var remove2 = document.getElementById('remove2');
     remove2.parentNode.removeChild(remove2);
     var replace = document.getElementById('replace');
     replace.parentNode.insertBefore(ifrm, replace);
-    document.getElementById('replace').innerHTML = "Playlist generated!"
+    document.getElementById('replace').innerHTML = "Here's the playlist generated for you and your friends."
 })
