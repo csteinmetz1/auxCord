@@ -13,28 +13,33 @@
 
 		</head>
 
-		<!-- Body-->
+	<!-- Body-->
 		<body>
 		<!-- Header 1 -->
 		<div class="headText" >
-			<a href="index.html" >
-				<img src="svg/logo_white.svg">
-			</a>
+			<h1>
+				<a href="index.html" >
+					<img src="svg/logo_white.svg">
+				</a>
+			</h1>
 		</div>
 
 		<!-- Form -->
-			<div class="form">
+			<div class="form" >
 					<form action="/aux_sync" method="post">
 						<br>
-						<input type="text" name="auxId" value="" size="8" onkeyup="this.value = this.value.replace(/[^0-9]/, '')" maxlength="4" placeholder="enter aux id">
+						<input type="text" name="auxId" value="" size="8" 
+						onkeyup="this.value = this.value.replace(/[^0-9]/, '')" maxlength="4"
+						placeholder="enter aux id">
 						<br><br>
-						<input class="button" type="button" value="Submit">
+						<input class="button" type="submit" value="Submit">
 					</form>
 			</div>
 			<br>
-			<p class="desc">
+			<p class="desc" id="message" >
 					Enter a 4-digit code to join an existing aux.
 			</p>
+
 
 		</body>
 
