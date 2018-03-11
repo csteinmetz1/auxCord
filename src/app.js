@@ -265,12 +265,19 @@ app.post('/aux_sync', function (req, res) {
             }
           }
         });
-        console.log(matched_tracks);
+        //console.log(matched_tracks);
         return spotifyApi.createPlaylist(user_b_data.userId, 'auxCord', { 'public': true });
       })
       .then(function(result){
         playlistId = result.body.id;
-        return spotifyApi.addTracksToPlaylist(user_b_data.userId, playlistId, matched_tracks.slice(0,50))
+        var sampled_tracks = [];
+        matched_tracks.map(function(track){
+          if (sampled_tracks.length < 50){
+            sampled_tracks.push(matched_tracks[Math.floor(Math.random()*matched_tracks.length)]);
+          }
+        });
+        console.log(sampled_tracks);
+        return spotifyApi.addTracksToPlaylist(user_b_data.userId, playlistId, sampled_tracks);
       })
   }
   else {
