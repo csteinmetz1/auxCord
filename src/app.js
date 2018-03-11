@@ -189,7 +189,7 @@ app.get('/create', function (req, res) {
       // init socket.io
       io.on('connection', function (socket) {
         user_a_data.socketId = socket.id;
-        console.log('New user connected.')
+        console.log('New creation user connected.')
         var data = JSON.stringify(user_a_data);
         fs.writeFile('data/' + auxId + '.json', data, 'utf8'
           , function (err) {
@@ -200,10 +200,6 @@ app.get('/create', function (req, res) {
 });
 
 app.get('/join', function (req, res) {
-  io.on('connection', function (socket) {
-    req.session.socketId = socket.id;
-    console.log('New user connected.')
-  });
   res.redirect('/join.html');
 });
 
@@ -285,11 +281,15 @@ app.post('/aux_sync', function (req, res) {
       .then(function(result){
         io.to(user_a_data.socketId).emit("done", "https://open.spotify.com/embed/user/" + user_b_data.userId + "/playlist/" + playlistId)
         res.render('done.ejs', {playlistURL : "https://open.spotify.com/embed/user/" + user_b_data.userId + "/playlist/" + playlistId})
+        fs.unlink('data/' + auxId + '.json');
       })
   }
   else {
-    res.redirect('back');
-    io.to(req.session.socketId).emit("error", auxId + " is not a valid aux!");
+    res.redirect('/join.html');
+    //io.on('connection', function (socket) {
+    //  io.to(socket.id).emit("error", auxId + " is not a valid aux!");
+    //  console.log('Invalid aux.')
+    //});    
   }
 });
 

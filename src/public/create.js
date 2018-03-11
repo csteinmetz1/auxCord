@@ -20,4 +20,4 @@ socket.on('done', function(data){
     document.getElementById('insert').innerHTML = "Here's the playlist generated for you and your friends.";
     replace.parentNode.insertBefore(ifrm, replace);
     replace.parentNode.removeChild(replace);
-})s
+})
