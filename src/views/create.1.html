@@ -7,12 +7,6 @@
 			<!-- Style related links -->
 			<link rel="stylesheet" href="../public/css/auxCord.css">
 			<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">
-			
-			<script src="socket.js"></script>
-
-			<script type="text/javascript">
-				function login() {location.href = '/login'}
-			</script>
 
 			<meta charset="UTF-8">
 			<title>Create auxCord</title>
@@ -29,12 +23,11 @@
 			</div>
 				
 			<br>
-			<button onclick="rewrite()" >pls</button>
-			<h1 id="demo" >
+			<h1 id="remove1" >
 				A new aux has been created. 
 			</h1>
-			<h2 class="code" id="remove" >
-				<%=variable%>
+			<h2 class="code" id="remove2" >
+				<%=auxId%>
 			</h2>
 			<p class="desc" id="replace" >
 				<br>
@@ -44,5 +37,6 @@
 			</p>
 
 		</body>
+		<script src="../public/socket.js"></script>
 
 	</html>
