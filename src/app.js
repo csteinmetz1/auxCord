@@ -28,9 +28,9 @@ var redirect_uri = keys.redirect_uri;
 
 // Set API keys for the library 
 var spotifyApi = new SpotifyWebApi({
-  clientId : keys.client_id,
-  clientSecret : keys.client_id,
-  redirectUri : keys.client_id
+  clientId: keys.client_id,
+  clientSecret: keys.client_id,
+  redirectUri: keys.client_id
 });
 ////////////////////////////////////////////////////
 
@@ -39,7 +39,7 @@ var spotifyApi = new SpotifyWebApi({
  * @param  {number} length The length of the string
  * @return {string} The generated string
  */
-var generateRandomString = function(length) {
+var generateRandomString = function (length) {
   var text = '';
   var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -63,7 +63,7 @@ app.use(bodyparser.urlencoded({
 app.use(bodyparser.json());
 
 app.use(express.static(__dirname + '/public'))
-   .use(cookieParser());
+  .use(cookieParser());
 
 // setup session cookie
 app.use(session({
@@ -73,13 +73,13 @@ app.use(session({
   activeDuration: 5 * 60 * 1000,
 }));
 
-app.get('/login', function(req, res) {
+app.get('/login', function (req, res) {
 
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-top-read playlist-read-private playlist-read-collaborative';
+  var scope = 'user-read-private user-top-read playlist-read-private playlist-read-collaborative playlist-modify-public';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -90,7 +90,7 @@ app.get('/login', function(req, res) {
     }));
 });
 
-app.get('/callback', function(req, res) {
+app.get('/callback', function (req, res) {
 
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -119,22 +119,22 @@ app.get('/callback', function(req, res) {
       json: true
     };
 
-    request.post(authOptions, function(error, response, body) {
+    request.post(authOptions, function (error, response, body) {
       if (!error && response.statusCode === 200) {
 
         var access_token = body.access_token,
-            refresh_token = body.refresh_token;
+          refresh_token = body.refresh_token;
 
         getUserId(access_token)
-        .then(function(result){
-          req.session.user_id = result;
-          res.redirect('/menu.html')
-        });
+          .then(function (result) {
+            req.session.user_id = result;
+            res.redirect('/menu.html')
+          });
 
         req.session.access_token = access_token; // set cookie
         spotifyApi.setAccessToken(access_token); // set library token
         console.log("Authenticated user.");
-      
+
       } else {
         res.redirect('/#' +
           querystring.stringify({
@@ -145,16 +145,16 @@ app.get('/callback', function(req, res) {
   }
 });
 
-app.get('/create', function(req, res) {
-  
+app.get('/create', function (req, res) {
+
   var socketId;
   // init socket.io
-  io.on('connection', function(socket){
+  io.on('connection', function (socket) {
     socketId = socket.id;
     console.log('New user connected.')
   });
 
-  var auxId = Math.floor(1000 + Math.random()*9000)
+  var auxId = Math.floor(1000 + Math.random() * 9000)
   console.log('Creating new aux', auxId);
 
   var user_a_data = {};
@@ -162,48 +162,49 @@ app.get('/create', function(req, res) {
   user_a_data.auxId = auxId;
   user_a_data.userId = req.session.user_id;
   getUsersTopTracks(req.session.access_token, 'short_term')
-  .then(function(result){
-    user_a_data.tracks = result;
-    return getUsersTopTracks(req.session.access_token, 'medium_term');
-  })
-  .then(function(result){
-    user_a_data.tracks = user_a_data.tracks.concat(result);
-    return getUsersTopTracks(req.session.access_token, 'long_term');
-  })
-  .then(function(result){
-    user_a_data.tracks = user_a_data.tracks.concat(result)
-    return getUsersPlaylists(req.session.access_token, user_a_data.userId)
-  })
-  .then(function(result){
-    var promises = result.items.map(function(playlist){
-      var ownerId = playlist.owner.id;
-      return getUsersPlaylistTracks(req.session.access_token, ownerId, playlist.id);
+    .then(function (result) {
+      user_a_data.tracks = result;
+      return getUsersTopTracks(req.session.access_token, 'medium_term');
     })
-    return Promise.all(promises);
-  })
-  .then(function(result){
-    user_a_data.tracks = result.reduce(function (accumulator, playlist) {
-      //console.log(accumulator.con(playlist.items));
-      console.log(accumulator.length);
-      accumulator = accumulator.concat(playlist.items)
-      return accumulator;
-    },
-    user_a_data.tracks
-   );
-    var data = JSON.stringify(user_a_data);
-    fs.writeFile('data/' + auxId + '.json', data, 'utf8' 
-    ,function(err){
-      if (err) throw err
+    .then(function (result) {
+      user_a_data.tracks = user_a_data.tracks.concat(result);
+      return getUsersTopTracks(req.session.access_token, 'long_term');
+    })
+    .then(function (result) {
+      user_a_data.tracks = user_a_data.tracks.concat(result)
+      return getUsersPlaylists(req.session.access_token, user_a_data.userId)
+    })
+    .then(function (result) {
+      var promises = result.items.map(function (playlist) {
+        var ownerId = playlist.owner.id;
+        return getUsersPlaylistTracks(req.session.access_token, ownerId, playlist.id);
+      })
+      return Promise.all(promises);
+    })
+    .then(function (result) {
+      user_a_data.tracks = result.reduce(function (accumulator, playlist) {
+        console.log(accumulator.length);
+        accumulator = accumulator.concat(playlist.items.map(function (item) {
+          return item.track;
+        }))
+        return accumulator;
+      },
+        user_a_data.tracks
+      );
+      var data = JSON.stringify(user_a_data);
+      fs.writeFile('data/' + auxId + '.json', data, 'utf8'
+        , function (err) {
+          if (err) throw err
+        });
+      res.render('create.ejs', { auxId: auxId });
     });
-    res.render('create.ejs', {auxId : auxId});
-  });
 });
 
-app.get('/join', function(req, res) {
+app.get('/join', function (req, res) {
   res.redirect('/join.html');
 });
 
-app.post('/aux_sync', function(req, res) {
+app.post('/aux_sync', function (req, res) {
   var auxId = req.body.auxId;
   var filepath = 'data/' + auxId + '.json';
   if (fs.existsSync(filepath)) {
@@ -214,46 +215,71 @@ app.post('/aux_sync', function(req, res) {
     var user_b_data = {};
     user_b_data.auxId = auxId;
     user_b_data.userId = req.session.user_id;
+    spotifyApi.setAccessToken(req.session.access_token);
+    var matched_tracks = [];
     getUsersTopTracks(req.session.access_token, 'short_term')
-    .then(function(result){
-      user_b_data.tracks = result;
-      return getUsersTopTracks(req.session.access_token, 'medium_term');
-    })
-    .then(function(result){
-      user_b_data.tracks = user_b_data.tracks.concat(result);
-      return getUsersTopTracks(req.session.access_token, 'long_term');
-    })
-    .then(function(result){
-      user_b_data.tracks = user_b_data.tracks.concat(result)
-      return getUsersPlaylists(req.session.access_token, user_b_data.userId)
-    })
-    .then(function(result){
-      var promises = result.items.map(function(playlist){
-        var ownerId = playlist.owner.id;
-        return getUsersPlaylistTracks(req.session.access_token, ownerId, playlist.id);
+      .then(function (result) {
+        user_b_data.tracks = result;
+        return getUsersTopTracks(req.session.access_token, 'medium_term');
       })
-      return Promise.all(promises);
-    })
-    .then(function(result){
-      user_b_data.tracks = result.reduce(function (accumulator, playlist) {
-        console.log(accumulator.length);
-        console.log(playlist)
-        accumulator = accumulator.concat(playlist.items)
-        return accumulator;
-      },
-      user_b_data.tracks
-     );
-     console.log(user_b_data.userId, user_b_data.tracks.length);
-     console.log(user_a_data.userId, user_a_data.tracks.length);
-    });
-  } 
+      .then(function (result) {
+        user_b_data.tracks = user_b_data.tracks.concat(result);
+        return getUsersTopTracks(req.session.access_token, 'long_term');
+      })
+      .then(function (result) {
+        user_b_data.tracks = user_b_data.tracks.concat(result)
+        return getUsersPlaylists(req.session.access_token, user_b_data.userId)
+      })
+      .then(function (result) {
+        var promises = result.items.map(function (playlist) {
+          var ownerId = playlist.owner.id;
+          return getUsersPlaylistTracks(req.session.access_token, ownerId, playlist.id);
+        })
+        return Promise.all(promises);
+      })
+      .then(function (result) {
+        //console.log(result)
+        user_b_data.tracks = result.reduce(function (accumulator, playlist) {
+          console.log(accumulator.length);
+          accumulator = accumulator.concat(playlist.items.map(function (item) {
+            return item.track;
+          }))
+          return accumulator;
+        },
+          user_b_data.tracks
+        );
+        console.log(user_b_data.userId, user_b_data.tracks.length);
+        console.log(user_a_data.userId, user_a_data.tracks.length);
+
+        user_a_data.tracks.forEach(function (value, a) {
+          for (var b = 0; b < user_b_data.tracks.length; b++) {
+            if (user_a_data.tracks[a].artists[0].id == user_b_data.tracks[b].artists[0].id) {
+              if (!(matched_tracks.includes(user_a_data.tracks[a].uri))) {
+                matched_tracks.push(user_a_data.tracks[a].uri)
+                //console.log("adding from user a...");
+              }
+              if (!(matched_tracks.includes(user_b_data.tracks[b].uri))) {
+                matched_tracks.push(user_b_data.tracks[b].uri)
+                //console.log("adding from user b...");
+              }
+            }
+          }
+        });
+        console.log(matched_tracks);
+        return spotifyApi.createPlaylist(user_b_data.userId, 'auxCord', { 'public': true });
+      })
+      .then(function(result){
+        playlistId = result.body.id;
+        return spotifyApi.addTracksToPlaylist(user_b_data.userId, playlistId, matched_tracks.slice(0,50))
+      })
+  }
   else {
     // send a socket message here to tell 
     // the user that there is no aux id
   }
 });
 
-app.get('/refresh_token', function(req, res) {
+app.get('/refresh_token', function (req, res) {
 
   // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
@@ -267,7 +293,7 @@ app.get('/refresh_token', function(req, res) {
     json: true
   };
 
-  request.post(authOptions, function(error, response, body) {
+  request.post(authOptions, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       var access_token = body.access_token;
       res.send({
@@ -280,15 +306,15 @@ app.get('/refresh_token', function(req, res) {
 ///////////////////////////////////////////
 //  Custom Methods
 ///////////////////////////////////////////
-var getUserId = function(access_token) {
+var getUserId = function (access_token) {
   var options = {
     url: 'https://api.spotify.com/v1/me',
     headers: { 'Authorization': 'Bearer ' + access_token },
     json: true
   };
-  return new Promise(function(resolve, reject){
-    request.get(options, function(error, response, body) {
-      if (error){
+  return new Promise(function (resolve, reject) {
+    request.get(options, function (error, response, body) {
+      if (error) {
         reject(error);
       }
       else {
@@ -298,15 +324,15 @@ var getUserId = function(access_token) {
   })
 }
 
-var getUsersTopTracks = function(access_token, term) {
+var getUsersTopTracks = function (access_token, term) {
   var options = {
     url: 'https://api.spotify.com/v1/me/top/tracks?time_range=' + term + '&limit=50',
     headers: { 'Authorization': 'Bearer ' + access_token },
     json: true
   };
-  return new Promise(function(resolve, reject){
-    request.get(options, function(error, response, body) {
-      if (error){
+  return new Promise(function (resolve, reject) {
+    request.get(options, function (error, response, body) {
+      if (error) {
         reject(error);
       }
       else {
@@ -316,15 +342,15 @@ var getUsersTopTracks = function(access_token, term) {
   })
 }
 
-var getUsersPlaylists = function(access_token, userId) {
+var getUsersPlaylists = function (access_token, userId) {
   var options = {
     url: 'https://api.spotify.com/v1/users/' + userId + '/playlists?limit=50',
     headers: { 'Authorization': 'Bearer ' + access_token },
     json: true
   };
-  return new Promise(function(resolve, reject){
-    request.get(options, function(error, response, body) {
-      if (error){
+  return new Promise(function (resolve, reject) {
+    request.get(options, function (error, response, body) {
+      if (error) {
         reject(error);
       }
       else {
@@ -334,15 +360,15 @@ var getUsersPlaylists = function(access_token, userId) {
   })
 }
 
-var getUsersPlaylistTracks = function(access_token, userId, playlistId) {
+var getUsersPlaylistTracks = function (access_token, userId, playlistId) {
   var options = {
     url: 'https://api.spotify.com/v1/users/' + userId + '/playlists/' + playlistId + '/tracks?fields=items(track)&limit=50',
     headers: { 'Authorization': 'Bearer ' + access_token },
     json: true
   };
-  return new Promise(function(resolve, reject){
-    request.get(options, function(error, response, body) {
-      if (error){
+  return new Promise(function (resolve, reject) {
+    request.get(options, function (error, response, body) {
+      if (error) {
         reject(error);
       }
       else {
@@ -353,7 +379,7 @@ var getUsersPlaylistTracks = function(access_token, userId, playlistId) {
 }
 
 ////////////// Start server ////////////
-var server = app.listen(8888, function(){
+var server = app.listen(8888, function () {
   console.log('auxCord listening on 8888')
 });
 var io = socket(server);
