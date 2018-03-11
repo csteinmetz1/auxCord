@@ -116,6 +116,9 @@ input {
 	text-align: center;
 	font-weight: lighter;
 }
+input:not([type=submit]) {
+	width: 200px;
+}
 
 input::-webkit-input-placeholder {
 	color: white !important;
