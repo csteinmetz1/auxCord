@@ -58,7 +58,7 @@ app.use(bodyparser.urlencoded({
   extended: true
 }));
 
-app.use(favicon(path.join(__dirname,'public/svg/favicon.ico')));
+//app.use(favicon(path.join(__dirname,'public/svg/favicon.ico')));
 
 app.use(bodyparser.json());
 
