@@ -14,6 +14,7 @@ var fs = require('fs'); // filesystem
 var SpotifyWebApi = require('spotify-web-api-node'); // library for spotify endpoints
 var socket = require('socket.io'); // sockect connection to clients 
 var bodyparser = require('body-parser'); // parse those bodies
+var async = require('async'); // async methods 
 
 /////////// MAKE SURE YOU HAVE THIS FILE /////////
 var keys = require('./keys'); // Spotify API keys
@@ -56,7 +57,7 @@ app.use(express.static(__dirname + '/public'))
 
 // setup session cookie
 app.use(session({
-  session: 'access_token',
+  cookieName: 'session',
   secret: 'random_string_goes_here',
   duration: 30 * 60 * 1000,
   activeDuration: 5 * 60 * 1000,
@@ -68,7 +69,7 @@ app.get('/login', function(req, res) {
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-read-email';
+  var scope = 'user-read-private user-top-read playlist-read-private playlist-read-collaborative';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -114,16 +115,16 @@ app.get('/callback', function(req, res) {
         var access_token = body.access_token,
             refresh_token = body.refresh_token;
 
-        var options = {
-          url: 'https://api.spotify.com/v1/me',
-          headers: { 'Authorization': 'Bearer ' + access_token },
-          json: true
-        };
+        getUserId(access_token)
+        .then(function(result){
+          req.session.user_id = result;
+          res.redirect('/menu.html')
+        });
 
-        req.access_token = access_token; // set cookie
+        req.session.access_token = access_token; // set cookie
         spotifyApi.setAccessToken(access_token); // set library token
         console.log("Authenticated user.");
-        res.redirect('/menu.html')
+      
       } else {
         res.redirect('/#' +
           querystring.stringify({
@@ -135,14 +136,54 @@ app.get('/callback', function(req, res) {
 });
 
 app.get('/create', function(req, res) {
+  
+  var auxId = Math.floor(1000 + Math.random()*9000)
+  console.log('Creating new aux', auxId);
 
+  var user_a_data = {};
+  user_a_data.auxId = auxId;
+  user_a_data.userId = req.session.user_id;
+  getUsersTopTracks(req.session.access_token, 'short_term')
+  .then(function(result){
+    user_a_data.tracks = result;
+    return getUsersTopTracks(req.session.access_token, 'medium_term');
+  })
+  .then(function(result){
+    user_a_data.tracks = user_a_data.tracks.concat(result);
+    return getUsersTopTracks(req.session.access_token, 'long_term');
+  })
+  .then(function(result){
+    user_a_data.tracks = user_a_data.tracks.concat(result)
+  });
+
+  getUsersPlaylists(req.session.access_token, user_a_data.userId)
+  .then(function(result){
+    var promises = result.items.map(function(playlist){
+      //console.log(playlist.id)
+      return getUsersPlaylistTracks(req.session.access_token, user_a_data.userId, playlist.id);
+    })
+    return Promise.all(promises);
+  })
+  .then(function(result){
+    result.reduce(function (accumulator, playlist) {
+      return accumulator + playlist.items;
+    },
+    user_a_data.tracks
+   );
+    //console.log('Found', user_a_data.length, 'tracks...');
+    var data = JSON.stringify(user_a_data);
+    fs.writeFile('data/' + auxId + '.json', data, 'utf8' 
+    ,function(err){
+      if (err) throw err
+    });
+  });
 });
 
 app.get('/join', function(req, res) {
   res.redirect('/join.html');
 });
 
-app.post('/aux-sync', function(req, res) {
+app.post('/aux_sync', function(req, res) {
   
 });
 
@@ -173,7 +214,7 @@ app.get('/refresh_token', function(req, res) {
 ///////////////////////////////////////////
 //  Custom Methods
 ///////////////////////////////////////////
-var getUsersTopTracks = function(access_token, term) {
+var getUserId = function(access_token) {
   var options = {
     url: 'https://api.spotify.com/v1/me',
     headers: { 'Authorization': 'Bearer ' + access_token },
@@ -181,11 +222,70 @@ var getUsersTopTracks = function(access_token, term) {
   };
   return new Promise(function(resolve, reject){
     request.get(options, function(error, response, body) {
-    
+      if (error){
+        reject(error);
+      }
+      else {
+        resolve(body.id);
+      }
     });
   })
-
 }
 
+var getUsersTopTracks = function(access_token, term) {
+  var options = {
+    url: 'https://api.spotify.com/v1/me/top/tracks?time_range=' + term + '&limit=50',
+    headers: { 'Authorization': 'Bearer ' + access_token },
+    json: true
+  };
+  return new Promise(function(resolve, reject){
+    request.get(options, function(error, response, body) {
+      if (error){
+        reject(error);
+      }
+      else {
+        resolve(body.items);
+      }
+    });
+  })
+}
+
+var getUsersPlaylists = function(access_token, userId) {
+  var options = {
+    url: 'https://api.spotify.com/v1/users/' + userId + '/playlists?limit=50',
+    headers: { 'Authorization': 'Bearer ' + access_token },
+    json: true
+  };
+  return new Promise(function(resolve, reject){
+    request.get(options, function(error, response, body) {
+      if (error){
+        reject(error);
+      }
+      else {
+        resolve(body);
+      }
+    });
+  })
+}
+
+var getUsersPlaylistTracks = function(access_token, userId, playlistId) {
+  var options = {
+    url: 'https://api.spotify.com/v1/users/' + userId + '/playlists/' + playlistId + '/tracks?fields=items(track)&limit=50',
+    headers: { 'Authorization': 'Bearer ' + access_token },
+    json: true
+  };
+  return new Promise(function(resolve, reject){
+    request.get(options, function(error, response, body) {
+      if (error){
+        reject(error);
+      }
+      else {
+        resolve(body);
+      }
+    });
+  })
+}
+
+////////////// Start server ////////////
 console.log('auxCord listening on 8888');
 app.listen(8888);
