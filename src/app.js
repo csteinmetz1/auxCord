@@ -15,6 +15,8 @@ var SpotifyWebApi = require('spotify-web-api-node'); // library for spotify endp
 var socket = require('socket.io'); // sockect connection to clients 
 var bodyparser = require('body-parser'); // parse those bodies
 var async = require('async'); // async methods 
+var favicon = require('serve-favicon'); // let's use a favicon
+var path = require('path');
 
 /////////// MAKE SURE YOU HAVE THIS FILE /////////
 var keys = require('./keys'); // Spotify API keys
@@ -55,6 +57,8 @@ app.set('view engine', 'ejs'); // setup ejs templating
 app.use(bodyparser.urlencoded({
   extended: true
 }));
+
+app.use(favicon(path.join(__dirname,'public/svg/favicon.ico')));
 
 app.use(bodyparser.json());
 
@@ -143,10 +147,18 @@ app.get('/callback', function(req, res) {
 
 app.get('/create', function(req, res) {
   
+  var socketId;
+  // init socket.io
+  io.on('connection', function(socket){
+    socketId = socket.id;
+    console.log('New user connected.')
+  });
+
   var auxId = Math.floor(1000 + Math.random()*9000)
   console.log('Creating new aux', auxId);
 
   var user_a_data = {};
+  user_a_data.socketId = socketId;
   user_a_data.auxId = auxId;
   user_a_data.userId = req.session.user_id;
   getUsersTopTracks(req.session.access_token, 'short_term')
@@ -341,5 +353,7 @@ var getUsersPlaylistTracks = function(access_token, userId, playlistId) {
 }
 
 ////////////// Start server ////////////
-console.log('auxCord listening on 8888');
-app.listen(8888);
+var server = app.listen(8888, function(){
+  console.log('auxCord listening on 8888')
+});
+var io = socket(server);
