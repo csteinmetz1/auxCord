@@ -279,8 +279,12 @@ app.post('/aux_sync', function (req, res) {
         return spotifyApi.addTracksToPlaylist(user_b_data.userId, playlistId, sampled_tracks);
       })
       .then(function(result){
-        io.to(user_a_data.socketId).emit("done", "https://open.spotify.com/embed/user/" + user_b_data.userId + "/playlist/" + playlistId)
-        res.render('done.ejs', {playlistURL : "https://open.spotify.com/embed/user/" + user_b_data.userId + "/playlist/" + playlistId})
+        var matches = matched_tracks.length;
+        var max_matches = Math.min(user_a_data.tracks.length, user_b_data.tracks.length);
+        var per_match = Math.floor((matches / max_matches)*100);
+        console.log(per_match);
+        io.to(user_a_data.socketId).emit("done", {playlistURL: "https://open.spotify.com/embed/user/" + user_b_data.userId + "/playlist/" + playlistId, per_match : per_match})
+        res.render('done.ejs', {playlistURL : "https://open.spotify.com/embed/user/" + user_b_data.userId + "/playlist/" + playlistId, per_match : per_match})
         fs.unlink('data/' + auxId + '.json');
       })
   }
