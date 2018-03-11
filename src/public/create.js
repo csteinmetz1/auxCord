@@ -1,30 +1,23 @@
 var socket = io.connect('http://localhost:8888');
 
-<<<<<<< HEAD:src/public/socket.js
-//btn.addEventListener('submit',);
-
-// 
-=======
->>>>>>> refs/remotes/origin/master:src/public/create.js
 socket.on('done', function(data){
-    
-})
-
-
-/*
-function rewrite() {
-    document.getElementById('demo').innerHTML('please just do something');
     var ifrm = document.createElement('iframe');
-    ifrm.setAttribute('src','reponse');
-    var remove = document.getElementById('remove');
-    var replace = document.getElementById('replace');
-    replace.parentNode.insertBefore(ifrm, replace);
-<<<<<<< HEAD:src/public/socket.js
-}
+    ifrm.setAttribute('src', data);
+    ifrm.setAttribute('width','300');
+    ifrm.setAttribute('height','380');
+    ifrm.setAttribute('frameborder','0');
+    ifrm.setAttribute('allowtransparency','true');
+    
+    var textOut = document.createElement('p');
+    textOut.setAttribute('class','desc');
+    textOut.setAttribute('id', 'insert');
 
-rewrite();
-*/
-=======
+    document.getElementById('remove1').innerHTML = "aux Synchronized";
+    var remove2 = document.getElementById('remove2');
+    remove2.parentNode.removeChild(remove2);
+    var replace = document.getElementById('replace');
+    replace.parentNode.insertBefore(textOut,replace);
+    document.getElementById('insert').innerHTML = "Here's the playlist generated for you and your friends.";
+    replace.parentNode.insertBefore(ifrm, replace);
     replace.parentNode.removeChild(replace);
 })s
->>>>>>> refs/remotes/origin/master:src/public/create.js
