@@ -28,6 +28,7 @@ img {
 	-webkit-transition-duration: 0.4s; /* Safari */
 	transition-duration: 0.4s;
 	font-weight: lighter;
+	outline: none
 }
 
 .button2 {
