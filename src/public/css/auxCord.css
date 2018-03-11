@@ -84,6 +84,8 @@ img {
 		margin-bottom: 0%;
 		margin-left: 0%;
 		margin-right: 0%;
+		min-height: 6em;
+		min-width: 8em;
 	  border: none;
 	  background-color: rgb(241, 115, 109);
 		color: white;
