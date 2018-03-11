@@ -1,17 +1,25 @@
+/**
+ * auxCord
+ * CUhackit 2018
+ * March 10, 2018
+ */
+html {
+	height: 90%;
+}
 body {
-	background-color: #FA574D;
+	height: 90%;
+	margin: 0%;
+	background: linear-gradient(#FA574D, #FA6A33);
+	background-repeat: no-repeat;
+  background-attachment: fixed;
+
 	font-family: 'Roboto', Helvetica, Arial;
 	text-align: center;
 	color: white;
 }
 .headText {
 	margin-top: 5%;
-	text-align: center;
 }
-.loginButton {
-	text-align: center;
-}
-
 
 h1 {
 	font-weight: lighter;
@@ -26,31 +34,70 @@ img {
 	height: 300px;
 }
 
-@media only screen and (min-width : 320px) and (max-width : 800px) {
+@media only screen and (max-width : 800px) {
   /* For mobile phones: */
+	body {
+		font-size: 20px;
+		margin: 0px;
+		margin-top: 5px;
+		margin-bottom: 5px;
+		margin-left: 0%;
+		margin-right: 0%;
+		min-height: 80%;
+	}
+	.headText {
+		margin-top: 0%;
+		padding: 0em;
+	}
+
   h1 {
-    font-size: 5em;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    font-size: 3em;
   }
+	.desc {
+		font-size: 2em;
+	}
+
+	img {
+		width: 95%;
+		padding: 0em;
+		margin-top: 0%;
+	}
 
   .button:hover {
     cursor: pointer;
   }
 
-	.button {
-		background-color: #FA574D; /* Green */
-		border: 4px solid white;
+	.form {
+		padding: 0em;
+		margin-top: 0%;
+		margin-bottom: 0%;
+		margin-left: 0%;
+		margin-right: 0%;
+		align: center;
+		font-size: 3em;
+	}
+
+	.input {
+		padding: 0em;
+		height: 4em;
+		margin-top: 0%;
+		margin-bottom: 0%;
+		margin-left: 0%;
+		margin-right: 0%;
+	  border: none;
+	  background-color: rgb(241, 115, 109);
 		color: white;
-		padding: 4px 12px;
 		text-align: center;
+		font-weight: lighter;
+	}
+
+	.button {
+		height: 4em;
+		border: 1em solid white;
+		padding: 1em 2em;
 		text-decoration: none;
 		display: inline-block;
-		font-size: 64px;
-		-webkit-transition-duration: 0.4s; /* Safari */
-		transition-duration: 0.4s;
-		font-weight: lighter;
-		outline: none
+		font-size: 3em;
 	}
 
 }
@@ -69,31 +116,21 @@ img {
 	text-decoration: none;
 	display: inline-block;
 	font-size: 24px;
-	-webkit-transition-duration: 0.4s; /* Safari */
-	transition-duration: 0.4s;
 	font-weight: lighter;
-	outline: none
+
+	/*-webkit-transition-duration: 0.4s; /* Safari */
+	/*transition-duration: 0.4s;*/
+
+	-webkit-user-select: none;  /* Chrome 49+ */
+	-moz-user-select: none;     /* Firefox 43+ */
+	-ms-user-select: none;      /* No support yet */
+	user-select: none;          /* Likely future */
+	outline: none;
 }
 
 .button:hover {
 	background-color: rgb(241, 115, 109); /* Green */
 	color: white;
-}
-.button2:hover {
-	background-color: rgb(241, 115, 109); /* Green */
-	color: white;
-}
-
-.code {
-	font-size: 60px;
-	margin-top: 0%;
-	margin-bottom: 0%;
-}
-
-.move {
-	margin-top: 0%;
-	font-weight: lighter;
-	font-size: 20px;
 }
 
 .form {
@@ -103,6 +140,7 @@ img {
   -moz-user-select: none;     /* Firefox 43+ */
   -ms-user-select: none;      /* No support yet */
   user-select: none;          /* Likely future */
+	outline: none;
 }
 
 input {
@@ -120,15 +158,24 @@ input {
 input::-webkit-input-placeholder {
 	color: white !important;
 }
-
 input:-moz-placeholder { /* Firefox 18- */
 	color: white !important;
 }
-
 input::-moz-placeholder {  /* Firefox 19+ */
 	color: white !important;
 }
-
 input:-ms-input-placeholder {
 	color: white !important;
+}
+
+.code {
+	font-size: 60px;
+	margin-top: 0%;
+	margin-bottom: 0%;
+}
+
+.move {
+	margin-top: 0%;
+	font-weight: lighter;
+	font-size: 20px;
 }
