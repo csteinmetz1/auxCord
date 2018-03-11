@@ -58,7 +58,7 @@ app.use(bodyparser.urlencoded({
   extended: true
 }));
 
-app.use(favicon(path.join(__dirname,'public/favicon.ico')));
+//app.use(favicon(path.join(__dirname,'public/favicon.ico')));
 
 app.use(bodyparser.json());
 
@@ -200,6 +200,10 @@ app.get('/create', function (req, res) {
 });
 
 app.get('/join', function (req, res) {
+  io.on('connection', function (socket) {
+    req.session.socketId = socket.id;
+    console.log('New user connected.')
+  });
   res.redirect('/join.html');
 });
 
@@ -284,8 +288,8 @@ app.post('/aux_sync', function (req, res) {
       })
   }
   else {
-    // send a socket message here to tell 
-    // the user that there is no aux id
+    res.redirect('back');
+    io.to(req.session.socketId).emit("error", auxId + " is not a valid aux!");
   }
 });
 
