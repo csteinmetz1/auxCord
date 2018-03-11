@@ -279,6 +279,9 @@ app.post('/aux_sync', function (req, res) {
         console.log(sampled_tracks);
         return spotifyApi.addTracksToPlaylist(user_b_data.userId, playlistId, sampled_tracks);
       })
+      .then(function(result){
+        res.render('done.ejs', {playlistURL : "https://open.spotify.com/embed/user/" + user_b_data.userId + "/playlist/" + playlistId})
+      })
   }
   else {
     // send a socket message here to tell 
