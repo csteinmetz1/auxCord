@@ -176,6 +176,7 @@ app.get('/create', function(req, res) {
     ,function(err){
       if (err) throw err
     });
+    res.render('create.ejs', {auxId : auxId});
   });
 });
 
