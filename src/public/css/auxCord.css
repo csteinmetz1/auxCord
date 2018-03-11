@@ -68,6 +68,12 @@ h1 {
 	margin-bottom: 0%;
 }
 
+.move {
+	margin-top: 0%;
+	font-weight: lighter;
+	font-size: 20px;
+}
+
 .form {
 	font-weight: lighter;
 
