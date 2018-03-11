@@ -14,7 +14,9 @@ var fs = require('fs'); // filesystem
 var SpotifyWebApi = require('spotify-web-api-node'); // library for spotify endpoints
 var socket = require('socket.io'); // sockect connection to clients
 var bodyparser = require('body-parser'); // parse those bodies
-var async = require('async'); // async methods
+var async = require('async'); // async methods 
+var favicon = require('serve-favicon'); // let's use a favicon
+var path = require('path');
 
 /////////// MAKE SURE YOU HAVE THIS FILE /////////
 var keys = require('./keys'); // Spotify API keys
@@ -51,6 +53,14 @@ var stateKey = 'spotify_auth_state';
 
 var app = express();
 app.set('view engine', 'ejs'); // setup ejs templating
+
+app.use(bodyparser.urlencoded({
+  extended: true
+}));
+
+app.use(favicon(path.join(__dirname,'public/svg/favicon.ico')));
+
+app.use(bodyparser.json());
 
 app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
@@ -136,11 +146,18 @@ app.get('/callback', function(req, res) {
 });
 
 app.get('/create', function(req, res) {
+  var socketId;
+  // init socket.io
+  io.on('connection', function(socket){
+    socketId = socket.id;
+    console.log('New user connected.')
+  });
 
   var auxId = Math.floor(1000 + Math.random()*9000)
   console.log('Creating new aux', auxId);
 
   var user_a_data = {};
+  user_a_data.socketId = socketId;
   user_a_data.auxId = auxId;
   user_a_data.userId = req.session.user_id;
   getUsersTopTracks(req.session.access_token, 'short_term')
@@ -154,23 +171,24 @@ app.get('/create', function(req, res) {
   })
   .then(function(result){
     user_a_data.tracks = user_a_data.tracks.concat(result)
-  });
-
-  getUsersPlaylists(req.session.access_token, user_a_data.userId)
+    return getUsersPlaylists(req.session.access_token, user_a_data.userId)
+  })
   .then(function(result){
     var promises = result.items.map(function(playlist){
-      //console.log(playlist.id)
-      return getUsersPlaylistTracks(req.session.access_token, user_a_data.userId, playlist.id);
+      var ownerId = playlist.owner.id;
+      return getUsersPlaylistTracks(req.session.access_token, ownerId, playlist.id);
     })
     return Promise.all(promises);
   })
   .then(function(result){
-    result.reduce(function (accumulator, playlist) {
-      return accumulator + playlist.items;
+    user_a_data.tracks = result.reduce(function (accumulator, playlist) {
+      //console.log(accumulator.con(playlist.items));
+      console.log(accumulator.length);
+      accumulator = accumulator.concat(playlist.items)
+      return accumulator;
     },
     user_a_data.tracks
    );
-    //console.log('Found', user_a_data.length, 'tracks...');
     var data = JSON.stringify(user_a_data);
     fs.writeFile('data/' + auxId + '.json', data, 'utf8'
     ,function(err){
@@ -185,7 +203,53 @@ app.get('/join', function(req, res) {
 });
 
 app.post('/aux_sync', function(req, res) {
+  var auxId = req.body.auxId;
+  var filepath = 'data/' + auxId + '.json';
+  if (fs.existsSync(filepath)) {
+    // get user a data
+    user_a_data_json = fs.readFileSync(filepath, 'utf-8')
+    user_a_data = JSON.parse(user_a_data_json);
 
+    var user_b_data = {};
+    user_b_data.auxId = auxId;
+    user_b_data.userId = req.session.user_id;
+    getUsersTopTracks(req.session.access_token, 'short_term')
+    .then(function(result){
+      user_b_data.tracks = result;
+      return getUsersTopTracks(req.session.access_token, 'medium_term');
+    })
+    .then(function(result){
+      user_b_data.tracks = user_b_data.tracks.concat(result);
+      return getUsersTopTracks(req.session.access_token, 'long_term');
+    })
+    .then(function(result){
+      user_b_data.tracks = user_b_data.tracks.concat(result)
+      return getUsersPlaylists(req.session.access_token, user_b_data.userId)
+    })
+    .then(function(result){
+      var promises = result.items.map(function(playlist){
+        var ownerId = playlist.owner.id;
+        return getUsersPlaylistTracks(req.session.access_token, ownerId, playlist.id);
+      })
+      return Promise.all(promises);
+    })
+    .then(function(result){
+      user_b_data.tracks = result.reduce(function (accumulator, playlist) {
+        console.log(accumulator.length);
+        console.log(playlist)
+        accumulator = accumulator.concat(playlist.items)
+        return accumulator;
+      },
+      user_b_data.tracks
+     );
+     console.log(user_b_data.userId, user_b_data.tracks.length);
+     console.log(user_a_data.userId, user_a_data.tracks.length);
+    });
+  } 
+  else {
+    // send a socket message here to tell 
+    // the user that there is no aux id
+  }
 });
 
 app.get('/refresh_token', function(req, res) {
@@ -298,5 +362,7 @@ var getUsersPlaylistTracks = function(access_token, userId, playlistId) {
 }
 
 ////////////// Start server ////////////
-console.log('auxCord listening on 8888');
-app.listen(8888);
+var server = app.listen(8888, function(){
+  console.log('auxCord listening on 8888')
+});
+var io = socket(server);
