@@ -15,13 +15,14 @@ socket.on('done', function(data){
     
     var textOut = document.createElement('p');
     textOut.setAttribute('class','desc');
+    textOut.setAttribute('id', 'insert');
 
-    document.getElementById('remove1').innerHTML = "aux Synchronized"
+    document.getElementById('remove1').innerHTML = "aux Synchronized";
     var remove2 = document.getElementById('remove2');
     remove2.parentNode.removeChild(remove2);
     var replace = document.getElementById('replace');
     replace.parentNode.insertBefore(textOut,replace);
+    document.getElementById('insert').innerHTML = "Here's the playlist generated for you and your friends.";
     replace.parentNode.insertBefore(ifrm, replace);
     replace.parentNode.removeChild(replace);
-    document.getElementsByClassName('desc').innerHTML = "Here's the playlist generated for you and your friends."
 })
