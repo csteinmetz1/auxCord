@@ -7,6 +7,8 @@
 			<!-- Style related links -->
 			<link rel="stylesheet" href="../public/css/auxCord.css">
 			<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">
+			
+			<script src="socket.js"></script>
 
 			<script type="text/javascript">
 				function login() {location.href = '/login'}
@@ -27,13 +29,14 @@
 			</div>
 				
 			<br>
-			<h1>
+			<button onclick="rewrite()" >pls</button>
+			<h1 id="demo" >
 				A new aux has been created. 
 			</h1>
-			<h2 class="code" >
+			<h2 class="code" id="remove" >
 				<%=variable%>
 			</h2>
-			<p class="desc" >
+			<p class="desc" id="replace" >
 				<br>
 				Share your 4-digit code to synchronize.
 				<br>
