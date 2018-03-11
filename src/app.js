@@ -10,9 +10,9 @@ var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var session = require('client-sessions'); // store user data in cookies
-var fs = require('fs'); // filesystem 
+var fs = require('fs'); // filesystem
 var SpotifyWebApi = require('spotify-web-api-node'); // library for spotify endpoints
-var socket = require('socket.io'); // sockect connection to clients 
+var socket = require('socket.io'); // sockect connection to clients
 var bodyparser = require('body-parser'); // parse those bodies
 var async = require('async'); // async methods 
 var favicon = require('serve-favicon'); // let's use a favicon
@@ -26,7 +26,7 @@ var client_id = keys.client_id;
 var client_secret = keys.client_secret;
 var redirect_uri = keys.redirect_uri;
 
-// Set API keys for the library 
+// Set API keys for the library
 var spotifyApi = new SpotifyWebApi({
   clientId : keys.client_id,
   clientSecret : keys.client_id,
@@ -52,7 +52,7 @@ var generateRandomString = function(length) {
 var stateKey = 'spotify_auth_state';
 
 var app = express();
-app.set('view engine', 'ejs'); // setup ejs templating 
+app.set('view engine', 'ejs'); // setup ejs templating
 
 app.use(bodyparser.urlencoded({
   extended: true
@@ -134,7 +134,7 @@ app.get('/callback', function(req, res) {
         req.session.access_token = access_token; // set cookie
         spotifyApi.setAccessToken(access_token); // set library token
         console.log("Authenticated user.");
-      
+
       } else {
         res.redirect('/#' +
           querystring.stringify({
@@ -146,7 +146,6 @@ app.get('/callback', function(req, res) {
 });
 
 app.get('/create', function(req, res) {
-  
   var socketId;
   // init socket.io
   io.on('connection', function(socket){
@@ -191,7 +190,7 @@ app.get('/create', function(req, res) {
     user_a_data.tracks
    );
     var data = JSON.stringify(user_a_data);
-    fs.writeFile('data/' + auxId + '.json', data, 'utf8' 
+    fs.writeFile('data/' + auxId + '.json', data, 'utf8'
     ,function(err){
       if (err) throw err
     });
@@ -276,6 +275,16 @@ app.get('/refresh_token', function(req, res) {
     }
   });
 });
+
+// Handle 404
+ app.use(function(req, res) {
+		res.send('404: Page not Found', 404);
+ });
+
+ // Handle 500
+ app.use(function(error, req, res, next) {
+		res.send('500: Internal Server Error', 500);
+ });
 
 ///////////////////////////////////////////
 //  Custom Methods

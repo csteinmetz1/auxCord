@@ -9,18 +9,62 @@ body {
 	text-align: center;
 }
 .loginButton {
-		text-align: center;
+	text-align: center;
 }
+
+
+h1 {
+	font-weight: lighter;
+}
+.desc {
+	font-weight: lighter;
+	font-size: 20px;
+}
+
 img {
 	width: 500px;
 	height: 300px;
+}
+
+@media only screen and (min-width : 320px) and (max-width : 800px) {
+  /* For mobile phones: */
+  h1 {
+    font-size: 5em;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .button:hover {
+    cursor: pointer;
+  }
+
+	.button {
+		background-color: #FA574D; /* Green */
+		border: 4px solid white;
+		color: white;
+		padding: 4px 12px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 64px;
+		-webkit-transition-duration: 0.4s; /* Safari */
+		transition-duration: 0.4s;
+		font-weight: lighter;
+		outline: none
+	}
+
 }
 
 .button {
 	background-color: #FA574D; /* Green */
 	border: 2px solid white;
 	color: white;
-	padding: 16px 42px;
+	width:200px;
+	padding: 16px 16px; /*54.5px*/
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
@@ -31,20 +75,6 @@ img {
 	outline: none
 }
 
-.button2 {
-	background-color: #FA574D; /* Green */
-	border: 2px solid white;
-	color: white;
-	padding: 16px 54.5px;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 24px;
-	-webkit-transition-duration: 0.4s; /* Safari */
-	transition-duration: 0.4s;
-	font-weight: lighter;
-}
-
 .button:hover {
 	background-color: rgb(241, 115, 109); /* Green */
 	color: white;
@@ -52,15 +82,6 @@ img {
 .button2:hover {
 	background-color: rgb(241, 115, 109); /* Green */
 	color: white;
-}
-
-.desc {
-	font-weight: lighter;
-	font-size: 20px;
-}
-
-h1 {
-	font-weight: lighter;
 }
 
 .code {
@@ -94,4 +115,20 @@ input {
 	font-size: 24px;
 	text-align: center;
 	font-weight: lighter;
+}
+
+input::-webkit-input-placeholder {
+	color: white !important;
+}
+
+input:-moz-placeholder { /* Firefox 18- */
+	color: white !important;
+}
+
+input::-moz-placeholder {  /* Firefox 19+ */
+	color: white !important;
+}
+
+input:-ms-input-placeholder {
+	color: white !important;
 }
