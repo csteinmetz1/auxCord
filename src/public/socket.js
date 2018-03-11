@@ -2,7 +2,7 @@ var socket = io.connect('http://localhost:8888');
 
 socket.on('done', function(data){
     var ifrm = document.createElement('iframe');
-    ifrm.setAttribute('src', data.playlistLink);
+    ifrm.setAttribute('src', data);
     var remove1 = document.getElementById('remove1');
     remove1.parentNode.removeChild(remove1);
     var remove2 = document.getElementById('remove2');
