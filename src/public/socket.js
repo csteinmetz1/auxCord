@@ -1,22 +1,13 @@
 var socket = io.connect('http://localhost:8888');
 
-//btn.addEventListener('submit',);
-
-// 
 socket.on('done', function(data){
-    
-})
-
-
-/*
-function rewrite() {
-    document.getElementById('demo').innerHTML('please just do something');
     var ifrm = document.createElement('iframe');
-    ifrm.setAttribute('src','reponse');
-    var remove = document.getElementById('remove');
+    ifrm.setAttribute('src', data);
+    var remove1 = document.getElementById('remove1');
+    remove1.parentNode.removeChild(remove1);
+    var remove2 = document.getElementById('remove2');
+    remove2.parentNode.removeChild(remove2);
     var replace = document.getElementById('replace');
     replace.parentNode.insertBefore(ifrm, replace);
-}
-
-rewrite();
-*/
+    document.getElementById('replace').innerHTML = "Playlist generated!"
+})
