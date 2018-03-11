@@ -58,7 +58,7 @@ app.use(bodyparser.urlencoded({
   extended: true
 }));
 
-//app.use(favicon(path.join(__dirname,'public/svg/favicon.ico')));
+app.use(favicon(path.join(__dirname,'public/favicon.ico')));
 
 app.use(bodyparser.json());
 
@@ -147,18 +147,10 @@ app.get('/callback', function (req, res) {
 
 app.get('/create', function (req, res) {
 
-  var socketId;
-  // init socket.io
-  io.on('connection', function (socket) {
-    socketId = socket.id;
-    console.log('New user connected.')
-  });
-
+  var user_a_data = {};
   var auxId = Math.floor(1000 + Math.random() * 9000)
   console.log('Creating new aux', auxId);
 
-  var user_a_data = {};
-  user_a_data.socketId = socketId;
   user_a_data.auxId = auxId;
   user_a_data.userId = req.session.user_id;
   getUsersTopTracks(req.session.access_token, 'short_term')
@@ -191,12 +183,19 @@ app.get('/create', function (req, res) {
       },
         user_a_data.tracks
       );
-      var data = JSON.stringify(user_a_data);
-      fs.writeFile('data/' + auxId + '.json', data, 'utf8'
-        , function (err) {
-          if (err) throw err
-        });
+
       res.render('create.ejs', { auxId: auxId });
+
+      // init socket.io
+      io.on('connection', function (socket) {
+        user_a_data.socketId = socket.id;
+        console.log('New user connected.')
+        var data = JSON.stringify(user_a_data);
+        fs.writeFile('data/' + auxId + '.json', data, 'utf8'
+          , function (err) {
+            if (err) throw err
+        });
+      });
     });
 });
 
@@ -280,6 +279,7 @@ app.post('/aux_sync', function (req, res) {
         return spotifyApi.addTracksToPlaylist(user_b_data.userId, playlistId, sampled_tracks);
       })
       .then(function(result){
+        io.to(user_a_data.socketId).emit("done", "https://open.spotify.com/embed/user/" + user_b_data.userId + "/playlist/" + playlistId)
         res.render('done.ejs', {playlistURL : "https://open.spotify.com/embed/user/" + user_b_data.userId + "/playlist/" + playlistId})
       })
   }
