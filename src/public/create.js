@@ -1,10 +1,5 @@
 var socket = io.connect('http://localhost:8888');
 
-
-socket.on('error', function(data){
-    document.getElementById('message').innerHTML = data;
-})
-
 socket.on('done', function(data){
     var ifrm = document.createElement('iframe');
     ifrm.setAttribute('src', data);
@@ -25,4 +20,4 @@ socket.on('done', function(data){
     document.getElementById('insert').innerHTML = "Here's the playlist generated for you and your friends.";
     replace.parentNode.insertBefore(ifrm, replace);
     replace.parentNode.removeChild(replace);
-})
+})s
