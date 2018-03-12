@@ -36,5 +36,10 @@ Finally run the server.
 * Allow users to choose whether to save playlists
 * Add CSS animations 
 * Edit the logo homepage redirection to '/'
+* Improve CSS design for mobile 
+* Add tags for SEO
+* Add logic to exclude data from playlists named 'auxCord'
+* Extend data collection to recieve more than 50 playlists
+* Extend data collection to reviece more than 50 tracks per playlist 
 
 ### Won Best Cloud Based Hack at CUhackit 2018
