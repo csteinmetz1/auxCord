@@ -37,4 +37,4 @@ Finally run the server.
 * Add CSS animations 
 * Edit the logo homepage redirection to '/'
 
-### Won Best Cloud Based Hack and CUhackit 2018
+### Won Best Cloud Based Hack at CUhackit 2018
