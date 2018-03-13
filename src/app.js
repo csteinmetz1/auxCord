@@ -14,7 +14,6 @@ var fs = require('fs'); // filesystem
 var SpotifyWebApi = require('spotify-web-api-node'); // library for spotify endpoints
 var socket = require('socket.io'); // sockect connection to clients 
 var bodyparser = require('body-parser'); // parse those bodies
-var async = require('async'); // async methods 
 var favicon = require('serve-favicon'); // let's use a favicon
 var path = require('path');
 
@@ -264,7 +263,6 @@ app.post('/aux_sync', function (req, res) {
             }
           }
         });
-        //console.log(matched_tracks);
         return spotifyApi.createPlaylist(user_b_data.userId, 'auxCord', { 'public': true });
       })
       .then(function(result){
