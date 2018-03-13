@@ -40,6 +40,7 @@ Finally run the server.
 * Add tags for SEO
 * Add logic to exclude data from playlists named 'auxCord'
 * Extend data collection to recieve more than 50 playlists
-* Extend data collection to reviece more than 50 tracks per playlist 
+* Extend data collection to reviece more than 50 tracks per playlist
+* Fix socket.io socket management  
 
 ### Won Best Cloud Based Hack at CUhackit 2018

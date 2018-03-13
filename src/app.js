@@ -147,7 +147,10 @@ app.get('/callback', function (req, res) {
 app.get('/create', function (req, res) {
 
   var user_a_data = {};
-  var auxId = Math.floor(1000 + Math.random() * 9000)
+  var auxId = Math.floor(1000 + Math.random() * 9000);
+  while (fs.existsSync('data/' + auxId + '.json')) {
+    auxId = Math.floor(1000 + Math.random() * 9000);
+  }
   console.log('Creating new aux', auxId);
 
   user_a_data.auxId = auxId;
@@ -190,9 +193,8 @@ app.get('/create', function (req, res) {
         user_a_data.socketId = socket.id;
         console.log('New creation user connected.')
         var data = JSON.stringify(user_a_data);
-        fs.writeFile('data/' + auxId + '.json', data, 'utf8'
-          , function (err) {
-            if (err) throw err
+        fs.writeFile('data/' + auxId + '.json', data, 'utf8', function (err) {
+            if (err) throw err;
         });
       });
     });
