@@ -2,11 +2,15 @@
 
 Sync Spotify accounts to build tailored playlists.
 
+![auxCord](brand/home_page.png)
+
+View the live site at [auxcord.io](http://auxcord.io)
+
 ## Setup
 
 auxCord runs on Node.js. Install it [here](http://www.nodejs.org/download/).
 
-After installation clone this repo and run the following command inside the directory.
+After installation, clone this repo and run the following command inside the directory.
 
     $ npm install
 
@@ -30,7 +34,6 @@ Finally run the server.
 
 * Allow for more than two users to sync their accounts
 * Get favicon working
-* Fix file removal callback
 * Move .json file structure to some kind of database
 * Add Google Analytics
 * Allow users to choose whether to save playlists
