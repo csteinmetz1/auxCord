@@ -74,7 +74,6 @@ app.use(session({
 }));
 
 app.get('/login', function (req, res) {
-  spotifyApi.setAccessToken(req.session.access_token);
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
