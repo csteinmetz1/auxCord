@@ -54,11 +54,11 @@ var stateKey = 'spotify_auth_state';
 var app = express();
 app.set('view engine', 'ejs'); // setup ejs templating
 
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+
 app.use(bodyparser.urlencoded({
   extended: true
 }));
-
-//app.use(favicon(path.join(__dirname,'public/favicon.ico')));
 
 app.use(bodyparser.json());
 
