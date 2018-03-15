@@ -33,7 +33,6 @@ Finally run the server.
 ## To Do
 
 * Allow for more than two users to sync their accounts
-* Get favicon working
 * Move .json file structure to some kind of database
 * Add Google Analytics
 * Allow users to choose whether to save playlists
