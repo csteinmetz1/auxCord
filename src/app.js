@@ -29,8 +29,8 @@ var redirect_uri = keys.redirect_uri;
 // Set API keys for the library
 var spotifyApi = new SpotifyWebApi({
   clientId: keys.client_id,
-  clientSecret: keys.client_id,
-  redirectUri: keys.client_id
+  clientSecret: keys.client_secret,
+  redirectUri: keys.redirect_uri
 });
 ////////////////////////////////////////////////////
 
@@ -125,7 +125,8 @@ app.get('/callback', function (req, res) {
 
         getUserId(access_token)
           .then(function (result) {
-            req.session.user_id = result;
+            req.session.user_id = result.id;
+            req.session.display_name = result.display_name;
             res.redirect('/menu.html')
           });
 
@@ -185,6 +186,7 @@ function getUserData(req) {
   var userData = {
     userId: req.session.user_id,
     auxId: getNewAuxId(),
+    display_name : req.session.display_name,
     tracks: []
   };
 
@@ -290,8 +292,9 @@ function uniqueRandomIndices(needed, totalSize) {
 }
 
 
-function createSpotifyPlaylist(user, access_token,  tracks, maxEntries) {
-  return spotifyApi.createPlaylist(user.userId, 'auxCord', { 'public': true }).then(
+function createSpotifyPlaylist(user, userA ,access_token,  tracks, maxEntries) {
+  return spotifyApi.createPlaylist(user.userId, 'auxCord', { 'public': true , 
+  "description": "Synced with " + user.display_name + " and " + userA.display_name }).then(
     function(result) {
       var playlistId = result.body.id;
       user.newPlaylistId = playlistId; // adds property to object
@@ -318,6 +321,7 @@ app.post('/aux_sync', function (req, res) {
     getUserData(req).then(function (userB) {
 
       spotifyApi.setAccessToken(req.session.access_token);
+      userB.display_name = userB.display_name;
 
       var matched_tracks = [];
       console.log("User A: ", userA.userId, userA.totalTracks);
@@ -329,7 +333,7 @@ app.post('/aux_sync', function (req, res) {
 	}
       }
       console.log('creating playlist');
-      return createSpotifyPlaylist(userB, req.session.access_token, matched_tracks, 50)
+      return createSpotifyPlaylist(userB, userA, req.session.access_token, matched_tracks, 50)
 	.then(function(){
           var matches = matched_tracks.length;
           var max_matches = Math.min(userA.totalTracks, userB.totalTracks);
@@ -405,7 +409,7 @@ var getUserId = function (access_token) {
         reject(error);
       }
       else {
-        resolve(body.id);
+        resolve(body);
       }
     });
   });
