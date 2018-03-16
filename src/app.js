@@ -324,20 +324,23 @@ app.post('/aux_sync', function (req, res) {
       userB.display_name = userB.display_name;
 
       var matched_tracks = [];
+      var matched_artists = [];
       console.log("User A: ", userA.userId, userA.totalTracks);
       console.log("User B: ", userB.userId, userB.totalTracks);
 
       for (let artistId in userA.tracks) {
 	if (userB.tracks[artistId] !== undefined) {
-	  matched_tracks = matched_tracks.concat(Object.keys(Object.assign(userA.tracks[artistId], userB.tracks[artistId])));
+    matched_tracks = matched_tracks.concat(Object.keys(Object.assign(userA.tracks[artistId], userB.tracks[artistId])));
+    matched_artists.push(artistId);
 	}
       }
       console.log('creating playlist');
       return createSpotifyPlaylist(userB, userA, req.session.access_token, matched_tracks, 50)
 	.then(function(){
-          var matches = matched_tracks.length;
-          var max_matches = Math.min(userA.totalTracks, userB.totalTracks);
-          var per_match = Math.floor((matches / max_matches)*100);
+          var trackMatches = matched_tracks.length;
+          var artistMatches = matched_artists.length;
+          var max_matches = Math.min(userA.totalArtists, userB.totalArtists);
+          var per_match = Math.floor((artistMatches / max_matches)*100);
 
           console.log("created playlist");
 	  console.log(per_match);
