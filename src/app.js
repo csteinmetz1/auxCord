@@ -29,8 +29,8 @@ var redirect_uri = keys.redirect_uri;
 // Set API keys for the library
 var spotifyApi = new SpotifyWebApi({
   clientId: keys.client_id,
-  clientSecret: keys.client_id,
-  redirectUri: keys.client_id
+  clientSecret: keys.client_secret,
+  redirectUri: keys.redirect_uri
 });
 ////////////////////////////////////////////////////
 
@@ -125,7 +125,8 @@ app.get('/callback', function (req, res) {
 
         getUserId(access_token)
           .then(function (result) {
-            req.session.user_id = result;
+            req.session.user_id = result.id;
+            req.session.display_name = result.display_name;
             res.redirect('/menu.html')
           });
 
@@ -185,6 +186,7 @@ function getUserData(req) {
   var userData = {
     userId: req.session.user_id,
     auxId: getNewAuxId(),
+    display_name : req.session.display_name,
     tracks: []
   };
 
@@ -290,8 +292,9 @@ function uniqueRandomIndices(needed, totalSize) {
 }
 
 
-function createSpotifyPlaylist(user, access_token,  tracks, maxEntries) {
-  return spotifyApi.createPlaylist(user.userId, 'auxCord', { 'public': true }).then(
+function createSpotifyPlaylist(user, userA ,access_token,  tracks, maxEntries) {
+  return spotifyApi.createPlaylist(user.userId, 'auxCord', { 'public': true , 
+  "description": "Synced with " + user.display_name + " and " + userA.display_name }).then(
     function(result) {
       var playlistId = result.body.id;
       user.newPlaylistId = playlistId; // adds property to object
@@ -318,22 +321,26 @@ app.post('/aux_sync', function (req, res) {
     getUserData(req).then(function (userB) {
 
       spotifyApi.setAccessToken(req.session.access_token);
+      userB.display_name = userB.display_name;
 
       var matched_tracks = [];
+      var matched_artists = [];
       console.log("User A: ", userA.userId, userA.totalTracks);
       console.log("User B: ", userB.userId, userB.totalTracks);
 
       for (let artistId in userA.tracks) {
 	if (userB.tracks[artistId] !== undefined) {
-	  matched_tracks = matched_tracks.concat(Object.keys(Object.assign(userA.tracks[artistId], userB.tracks[artistId])));
+    matched_tracks = matched_tracks.concat(Object.keys(Object.assign(userA.tracks[artistId], userB.tracks[artistId])));
+    matched_artists.push(artistId);
 	}
       }
       console.log('creating playlist');
-      return createSpotifyPlaylist(userB, req.session.access_token, matched_tracks, 50)
+      return createSpotifyPlaylist(userB, userA, req.session.access_token, matched_tracks, 50)
 	.then(function(){
-          var matches = matched_tracks.length;
-          var max_matches = Math.min(userA.totalTracks, userB.totalTracks);
-          var per_match = Math.floor((matches / max_matches)*100);
+          var trackMatches = matched_tracks.length;
+          var artistMatches = matched_artists.length;
+          var max_matches = Math.min(userA.totalArtists, userB.totalArtists);
+          var per_match = Math.floor((artistMatches / max_matches)*100);
 
           console.log("created playlist");
 	  console.log(per_match);
@@ -405,7 +412,7 @@ var getUserId = function (access_token) {
         reject(error);
       }
       else {
-        resolve(body.id);
+        resolve(body);
       }
     });
   });
