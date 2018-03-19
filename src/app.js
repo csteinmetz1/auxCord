@@ -215,8 +215,19 @@ function getUserData(req) {
     getUsersPlaylists(req.session.access_token, userData.userId)
       .then(
 	function (result) {
-	  return Promise.all(result.items.map(function (playlist) {
-	    return getUsersPlaylistTracks(req.session.access_token, playlist.owner.id, playlist.id);
+
+    var playlists = result.items.filter(function(playlist) {
+      if (playlist.name === "auxCord") {
+        console.log('Found pre-exisitng auxCord playlist.');
+        return false;
+      }
+      else {
+        return true;
+      }
+    })
+
+	  return Promise.all(playlists.map(function (playlist) {
+        return getUsersPlaylistTracks(req.session.access_token, playlist.owner.id, playlist.id);
 	  }));
 	}
       )
@@ -325,8 +336,8 @@ app.post('/aux_sync', function (req, res) {
 
       var matched_tracks = [];
       var matched_artists = [];
-      console.log("User A: ", userA.userId, userA.totalTracks);
-      console.log("User B: ", userB.userId, userB.totalTracks);
+      console.log("User A: ", userA.userId, userA.totalTracks, userA.totalArtists);
+      console.log("User B: ", userB.userId, userB.totalTracks, userB.totalArtists);
 
       for (let artistId in userA.tracks) {
 	if (userB.tracks[artistId] !== undefined) {
@@ -343,7 +354,7 @@ app.post('/aux_sync', function (req, res) {
           var per_match = Math.floor((artistMatches / max_matches)*100);
 
           console.log("created playlist");
-	  console.log(per_match);
+	  console.log("Users are",  per_match, "% match.");
 
 
           io.to(userA.socketId)
