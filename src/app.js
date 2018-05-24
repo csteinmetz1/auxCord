@@ -50,7 +50,7 @@ var generateRandomString = function (length) {
 };
 
 var stateKey = 'spotify_auth_state';
-
+////////////////////// APP //////////////////////////
 var app = express();
 app.set('view engine', 'ejs'); // setup ejs templating
 
@@ -72,7 +72,8 @@ app.use(session({
   duration: 30 * 60 * 1000,
   activeDuration: 5 * 60 * 1000,
 }));
-
+// this is where the random string is used
+//passed in for state which is used for 
 app.get('/login', function (req, res) {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
