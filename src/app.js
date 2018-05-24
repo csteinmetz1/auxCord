@@ -304,7 +304,7 @@ function uniqueRandomIndices(needed, totalSize) {
 
 
 function createSpotifyPlaylist(user, userA ,access_token,  tracks, maxEntries) {
-  return spotifyApi.createPlaylist(user.userId, 'auxCord', { 'public': true , 
+  return spotifyApi.createPlaylist(user.userId, 'auxCord', { 'public': true ,
   "description": "Synced with " + user.display_name + " and " + userA.display_name }).then(
     function(result) {
       var playlistId = result.body.id;

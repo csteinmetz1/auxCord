@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!-- HTML -->
+	<html lang="en-US">
+	<!-- Head -->
+		<head>
+
+			<!-- Style related links -->
+			<link rel="stylesheet" href="css/auxCord.css">
+			<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+			<meta charset="UTF-8">
+			<title>Create auxCord</title>
+
+		</head>
+
+	<!-- Body-->
+		<body>
+			<!-- Header 1 -->
+			<div class="headText" >
+				<a href="index.html" >
+					<img src="svg/logo_white.svg">
+				</a>
+			</div>
+				
+			<br>
+			<h1 id="remove1" >
+				A new aux has been created. 
+			</h1>
+			<h2 class="code fade-in one" id="remove2" >
+				<%=auxId%>
+			</h2>
+			<p class="desc" id="replace" >
+				<br>
+				Share your 4-digit code to synchronize.
+				<br>
+				Waiting for connection...
+			</p>
+
+		</body>
+		<script src="create.js"></script>
+	</html>

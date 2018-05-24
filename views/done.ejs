@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!-- HTML -->
+	<html lang="en-US">
+	<!-- Head -->
+		<head>
+
+			<!-- Style related links -->
+			<link rel="stylesheet" href="css/auxCord.css">
+			<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">
+
+			<script type="text/javascript">
+				function login() {location.href = '/login'}
+			</script>
+
+			<meta charset="UTF-8">
+			<title>auxCord</title>
+
+		</head>
+
+	<!-- Body-->
+		<body>
+		<!-- Header 1 -->
+		<div class="headText" >
+			<a href="index.html" >
+				<img src="svg/logo_white.svg">
+			</a>
+		</div>		
+		<h1>aux Synchronized</h1>
+		<p class="desc" >
+				Here's the playlist generated for you and your friends.
+		</p>
+		<iframe src=<%= playlistURL %> width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
+		<h2> <%=per_match%> % match</h2>
+	</body>
+
+</html>
