@@ -1,5 +1,7 @@
 import * as express from 'express'
-import { join } from 'path'
+import socket from 'socket.io'
+
+import * as path from 'path'
 import * as favicon from 'serve-favicon'
 
 import * as session from 'client-sessions'
@@ -14,12 +16,15 @@ import { generateRandomString } from './Tools'
 
 // routes
 import { login } from './routes/Login'
+import { join } from './routes/Join'
 
 const stateKey = 'spotify_auth_state'
 export { stateKey }
 
 var app = express();
 app.set('view engine', 'ejs');
+
+
 
 
 // specify parsers
@@ -39,16 +44,20 @@ app.use(session({
 
 
 // specify favicon
-app.use(favicon(join(__dirname, 'public', 'favicon.ico')))
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 // static serve public directory
-app.use(express.static(join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')))
 
 
 
 
 app.get('/login', login);
+app.get('/join', join);
 
 
 
 var server = app.listen(8888, () => console.log('auxCord listening on 8888'))
+var io = socket(server)
+
+export { io }
