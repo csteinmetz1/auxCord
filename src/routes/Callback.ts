@@ -4,11 +4,16 @@ import keys from './../Keys'
 import request from 'request'
 import {
   setAccessToken,
-  getUserId
-} from './../SpotifyConnector'
+  getUserId,
+} from '../SpotifyConnector'
+
+import {
+  UserRequest,
+  UserResponse
+} from '../Types'
 
 
-export function callback(req, res) {
+export function callback(req: UserRequest, res: UserResponse) {
   // your application requests refresh and access tokens
   // after checking the state parameter
 

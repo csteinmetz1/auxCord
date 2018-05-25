@@ -30,7 +30,7 @@ export function setAccessToken(access_token: string) {
 
 
 interface UserIdResult extends Promise<{
-  id: number,
+  id: string,
   display_name: string
 }> { }
 

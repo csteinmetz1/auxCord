@@ -4,11 +4,20 @@ export interface Session {
   access_token: string
 }
 
+export interface Query {
+  code: string
+  state: string
+}
+
+
 export interface UserRequest {
   session: Session
+  query: Query
+  cookies?: any
 }
 export interface UserResponse {
   redirect: (route: string) => void
+
   render: (
     filename: string,
     options: {
@@ -16,6 +25,9 @@ export interface UserResponse {
       per_match: number
     }
   ) => void
+
+  clearCookie: (stateKey: string) => void
+
 }
 
 
