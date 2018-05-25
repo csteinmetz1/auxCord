@@ -1,4 +1,7 @@
 import { UserDataClass, getUserData } from './../Gather'
+import { GetMatches } from '../Combine'
+
+
 import {
   setAccessToken,
   createSpotifyPlaylist
@@ -10,7 +13,7 @@ import {
   userIdExists,
   getUserById,
   deleteById
-} from '../Data'
+} from '../DataConnector'
 
 import {
   AuxSyncRequest,
@@ -20,28 +23,9 @@ import {
 
 
 
-function GenerateCommonPlaylist(userA: UserData, userB: UserData, access_token: string, res: UserResponse) {
-  var matched_tracks: Array<string> = [];
-  var matched_artists: Array<string> = [];
+function CreateCombinedPlaylist(userA: UserData, userB: UserData, access_token: string, res: UserResponse) {
 
-  console.log("User A: ", userA.userId, userA.totalTracks, userA.totalArtists);
-  console.log("User B: ", userB.userId, userB.totalTracks, userB.totalArtists);
-
-  for (let artistId in userA.tracks) {
-    if (userB.tracks[artistId] !== undefined) {
-
-      matched_tracks = matched_tracks.concat(
-        Object.keys(
-          Object.assign(
-            userA.tracks[artistId],
-            userB.tracks[artistId]
-          )
-        )
-      )
-      matched_artists.push(artistId);
-    }
-  }
-
+  const { matched_artists, matched_tracks } = GetMatches(userA, userB)
 
   console.log('creating playlist')
 
@@ -95,6 +79,6 @@ export function auxsync(req: AuxSyncRequest, res: UserResponse) {
 
   return getUserData(req).then((userB) => {
     setAccessToken(req.session.access_token)
-    return GenerateCommonPlaylist(userA, userB, req.session.access_token, res)
+    return CreateCombinedPlaylist(userA, userB, req.session.access_token, res)
   })
 }

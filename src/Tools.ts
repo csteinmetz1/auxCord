@@ -1,4 +1,5 @@
 import { setAccessToken } from './SpotifyConnector'
+import { TrackTable } from './Types'
 
 /**
  * Generates a random string containing numbers and letters
@@ -16,9 +17,7 @@ export function generateRandomString(length: number) {
 }
 
 
-export interface TrackTable {
-  [artistId: string]: { [trackId: string]: boolean }
-}
+
 
 
 export interface ArtistFormat {

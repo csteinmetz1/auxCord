@@ -25,13 +25,17 @@ export interface AuxSyncRequest extends UserRequest {
 }
 
 
+export interface TrackTable {
+  [artistId: string]: { [trackId: string]: boolean }
+}
+
 
 // User data
 export interface UserData {
   userId: string
   auxId: number
   display_name: string
-  tracks: { [artistId: string]: { [trackId: string]: string } }
+  tracks: TrackTable
   totalTracks: number
   totalArtists: number
 

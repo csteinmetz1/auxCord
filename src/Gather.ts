@@ -5,12 +5,12 @@ import {
   getUsersPlaylistTracks
 } from './SpotifyConnector'
 import {
-  TrackTable,
   transformTracks,
   mergeTracks
 } from './tools'
 
 import {
+  TrackTable,
   UserRequest,
   UserData
 } from './Types'
@@ -22,7 +22,7 @@ export class UserDataClass implements UserData {
   userId: string
   auxId: number
   display_name: string
-  tracks: { [artistId: string]: { [trackId: string]: string } }
+  tracks: TrackTable
   totalTracks: number
   totalArtists: number
 
