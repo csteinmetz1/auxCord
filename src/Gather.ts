@@ -52,7 +52,7 @@ function DoPlaylistQueries(access_token: string, promises: TrackPromises) {
 
 
 
-class UserData {
+export class UserData {
   userId: number
   auxId: number
   display_name: string
