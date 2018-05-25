@@ -1,14 +1,14 @@
-import * as express from 'express'
+import express from 'express'
 import socket from 'socket.io'
 
-import * as path from 'path'
-import * as favicon from 'serve-favicon'
+import path from 'path'
+import favicon from 'serve-favicon'
 
-import * as session from 'client-sessions'
+import session from 'client-sessions'
 
 // parsers
-import * as bodyParser from 'body-parser'
-import * as cookieParser from 'cookie-parser'
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 
 
 // misc
@@ -29,17 +29,17 @@ app.set('view engine', 'ejs');
 
 // specify parsers
 app
-    .use(bodyParser.urlencoded({ extended: true }))
-    .use(bodyParser.json())
-    .use(cookieParser())
+  .use(bodyParser.urlencoded({ extended: true }))
+  .use(bodyParser.json())
+  .use(cookieParser())
 
 
 // specify session
 app.use(session({
-    cookieName: 'session',
-    secret: 'random_string_goes_here',
-    duration: 30 * 60 * 1000,
-    activeDuration: 5 * 60 * 1000,
+  cookieName: 'session',
+  secret: 'random_string_goes_here',
+  duration: 30 * 60 * 1000,
+  activeDuration: 5 * 60 * 1000,
 }))
 
 
