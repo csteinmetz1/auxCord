@@ -15,7 +15,12 @@ export function generateRandomString(length: number) {
   return text
 }
 
-export function transformTracks(tracks) {
+
+export interface TrackTable {
+  [artistId: string]: { [trackId: string]: boolean }
+}
+
+export function transformTracks(tracks): TrackTable {
   // tracks are stored in a hash table
   // Note: there is no length attribute though.
   var trackTable = {}
@@ -34,11 +39,11 @@ export function transformTracks(tracks) {
   return trackTable
 }
 
-export function mergeTracks(a, b) {
+export function mergeTracks(a: TrackTable, b: TrackTable): TrackTable {
   return Object.assign(a, b)
 }
 
-export function uniqueRandomIndices (needed, totalSize) {
+export function uniqueRandomIndices(needed, totalSize) {
   var values = [];
 
   // gets random unique values by using the property that the

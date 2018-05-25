@@ -17,15 +17,16 @@ import { generateRandomString } from './Tools'
 // routes
 import { login } from './routes/Login'
 import { join } from './routes/Join'
+import { callback } from './routes/Callback'
+import { create } from './routes/Create'
+import { refresh_token } from './routes/RefreshToken'
+
 
 const stateKey = 'spotify_auth_state'
 export { stateKey }
 
 var app = express();
 app.set('view engine', 'ejs');
-
-
-
 
 // specify parsers
 app
@@ -51,10 +52,13 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 
 
-
-app.get('/login', login);
-app.get('/join', join);
-
+// routes
+app
+  .get('/login', login)
+  .get('/callback', callback)
+  .get('/create', create)
+  .get('/join', join)
+  .get('/refresh_token', refresh_token)
 
 
 var server = app.listen(8888, () => console.log('auxCord listening on 8888'))
