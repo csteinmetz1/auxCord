@@ -35,7 +35,7 @@ var spotifyApi = new SpotifyWebApi({
   redirectUri: keys.redirect_uri
 });
 ////////////////////////////////////////////////////
-//CONVERTED
+//CONVERTED in Tools.ts
 ////////////////////////////////////////////////////
 /**
  * Generates a random string containing numbers and letters
