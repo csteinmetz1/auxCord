@@ -3,83 +3,63 @@ import keys from './Keys'
 import * as request from 'request'
 
 
-
 var spotifyApi = new SpotifyWebApi(keys);
+
+
+
+
+function Get(options: request.Options) {
+  return new Promise((resolve, reject) => {
+    request.get(options, (error, response, body) => {
+      if (error) reject(error)
+      else resolve(body)
+    })
+  })
+}
+
 
 ////////////////////////////////////////////////////////////
 export function setAccessToken(access_token: string) {
-	spotifyApi.setAccessToken(access_token)
+  spotifyApi.setAccessToken(access_token)
 }
+
 ////////////////////////////////////////////////////////////
 export function getUserId(access_token) {
-	var options = {
-		url: 'https://api.spotify.com/v1/me',
-		headers: { 'Authorization': 'Bearer ' + access_token },
-		json: true
-	};
-	return new Promise(function (resolve, reject) {
-		request.get(options, function (error, response, body) {
-			if (error) {
-				reject(error);
-			}
-			else {
-				resolve(body);
-			}
-		});
-	});
+  return Get({
+    url: 'https://api.spotify.com/v1/me',
+    headers: { 'Authorization': 'Bearer ' + access_token },
+    json: true
+  })
 }
+
+
+interface TrackList {
+  items: Array<any>
+}
+
+
 ////////////////////////////////////////////////////////////
 export function getUsersTopTracks(access_token, term) {
-	var options = {
-		url: 'https://api.spotify.com/v1/me/top/tracks?time_range=' + term + '&limit=50',
-		headers: { 'Authorization': 'Bearer ' + access_token },
-		json: true
-	};
-	return new Promise(function (resolve, reject) {
-		request.get(options, function (error, response, body) {
-			if (error) {
-				reject(error);
-			}
-			else {
-				resolve(body.items);
-			}
-		});
-	});
+  return Get({
+    url: 'https://api.spotify.com/v1/me/top/tracks?time_range=' + term + '&limit=50',
+    headers: { 'Authorization': 'Bearer ' + access_token },
+    json: true
+  }).then((res: TrackList) => res.items)
 }
 ////////////////////////////////////////////////////////////
 export function getUsersPlaylists(access_token, userId) {
-	var options = {
-		url: 'https://api.spotify.com/v1/users/' + userId + '/playlists?limit=50',
-		headers: { 'Authorization': 'Bearer ' + access_token },
-		json: true
-	};
-	return new Promise(function (resolve, reject) {
-		request.get(options, function (error, response, body) {
-			if (error) {
-				reject(error);
-			}
-			else {
-				resolve(body);
-			}
-		});
-	});
+  return Get({
+    url: 'https://api.spotify.com/v1/users/' + userId + '/playlists?limit=50',
+    headers: { 'Authorization': 'Bearer ' + access_token },
+    json: true
+  })
 }
 
 ////////////////////////////////////////////////////////////
 export function getUsersPlaylistTracks(access_token, userId, playlistId) {
-	var options = {
-		url: 'https://api.spotify.com/v1/users/' + userId + '/playlists/' + playlistId + '/tracks?fields=items(track)&limit=50',
-		headers: { 'Authorization': 'Bearer ' + access_token },
-		json: true
-	};
-	return new Promise(function (resolve, reject) {
-		request.get(options, function (error, response, body) {
-			if (error) {
-				reject(error);
-			}
-			else {
-				resolve(body);
-			}
-		});
-	});
+  return Get({
+    url: 'https://api.spotify.com/v1/users/' + userId + '/playlists/' + playlistId + '/tracks?fields=items(track)&limit=50',
+    headers: { 'Authorization': 'Bearer ' + access_token },
+    json: true
+  })
 }
