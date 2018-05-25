@@ -1,15 +1,25 @@
-
+import {
+  existsSync, 
+  unlink,
+  readFileSync
+} from 'fs'
+import { getUserData } from './../Gather'
+import { 
+  setAccessToken, 
+  createSpotifyPlaylist 
+} from './../SpotifyConnector'
+import { io } from '../server'
 
 export function auxsync(req, res) {
   var auxId = req.body.auxId;
   var filepath = 'data/' + auxId + '.json';
-  if (fs.existsSync(filepath)) {
+  if (existsSync(filepath)) {
     // get user a data
-    var userA = JSON.parse(fs.readFileSync(filepath, 'utf-8'));
+    var userA = JSON.parse(readFileSync(filepath, 'utf-8'));
 
     getUserData(req).then(function (userB) {
 
-      spotifyApi.setAccessToken(req.session.access_token);
+      setAccessToken(req.session.access_token);
       userB.display_name = userB.display_name;
 
       var matched_tracks = [];
@@ -37,19 +47,29 @@ export function auxsync(req, res) {
 
           io.to(userA.socketId)
             .emit("done", {
-              playlistURL: "https://open.spotify.com/embed/user/" + userB.userId + "/playlist/" + userB.newPlaylistId,
+              playlistURL: "https://open.spotify.com/embed/user/" + 
+              userB.userId + "/playlist/" + userB.newPlaylistId,
               per_match: per_match
             });
 
           res.render('done.ejs', {
-            playlistURL: "https://open.spotify.com/embed/user/" + userB.userId + "/playlist/" + userB.newPlaylistId,
+            playlistURL: "https://open.spotify.com/embed/user/" + userB.userId + 
+            "/playlist/" + userB.newPlaylistId,
             per_match: per_match
           });
 
-          fs.unlink('data/' + auxId + '.json', function (err) {
+          unlink('data/' + auxId + '.json', function (err) {
             if (err) throw err;
             console.log('Deleted', 'data/' + auxId + '.json');
           });
         });
     });
   }
+  else {
+    res.redirect('/join.html');
+    //io.on('connection', function (socket) {
+    //  io.to(socket.id).emit("error", auxId + " is not a valid aux!");
+    //  console.log('Invalid aux.')
+    //});
+  }
+}
