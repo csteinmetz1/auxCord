@@ -2,12 +2,14 @@ import { stateKey } from './../server'
 import { stringify } from 'querystring'
 import keys from './../Keys'
 import * as request from 'request'
-import { setAccessToken } from './../SpotifyConnector'
-import { getUserId } from './../SpotifyConnector'
+import { 
+  setAccessToken, 
+  getUserId 
+} from './../SpotifyConnector'
 
 
 export function callback(req, res) {
-     // your application requests refresh and access tokens
+  // your application requests refresh and access tokens
   // after checking the state parameter
 
   var code = req.query.code || null;

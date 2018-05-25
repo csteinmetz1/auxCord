@@ -1,12 +1,12 @@
 import { getNewAuxId } from './Data'
-import { 
-   getUsersPlaylists, 
-   getUsersTopTracks, 
-   getUsersPlaylistTracks
+import {
+	getUsersPlaylists,
+	getUsersTopTracks,
+	getUsersPlaylistTracks
 } from './SpotifyConnector'
-import { 
-   transformTracks, 
-   mergeTracks
+import {
+	transformTracks,
+	mergeTracks
 } from './tools'
 
 
@@ -15,9 +15,9 @@ export function getUserData(req) {
 		userId: req.session.user_id,
 		auxId: getNewAuxId(),
 		display_name: req.session.display_name,
-      tracks: {},
-      totalTracks: 0,
-      totalArtists: 0
+		tracks: {},
+		totalTracks: 0,
+		totalArtists: 0
 	};
 
 	let termQueries = [
@@ -44,7 +44,7 @@ export function getUserData(req) {
 	promises.push(
 		getUsersPlaylists(req.session.access_token, userData.userId)
 			.then(
-				function (result:{ items: Array<any>}) {
+				function (result: { items: Array<any> }) {
 
 					var playlists = result.items.filter(function (playlist) {
 						if (playlist.name === "auxCord") {
@@ -64,7 +64,7 @@ export function getUserData(req) {
 			.then(
 				function (result) {
 					results['users_playlist_tracks'] = transformTracks(
-                  result.reduce(function (accumulator: Array<any>, playlist: {items: Array<any>}) {
+						result.reduce(function (accumulator: Array<any>, playlist: { items: Array<any> }) {
 							accumulator = accumulator.concat(playlist.items.map(function (item) {
 								return item.track;
 							}));
