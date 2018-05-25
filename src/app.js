@@ -348,7 +348,7 @@ function createSpotifyPlaylist(user, userA, access_token, tracks, maxEntries) {
 }
 
 ////////////////////////////////////////////////////
-//UNCONVERTED
+//CONVERTING
 ////////////////////////////////////////////////////
 app.post('/aux_sync', function (req, res) {
   var auxId = req.body.auxId;
@@ -412,7 +412,7 @@ app.post('/aux_sync', function (req, res) {
   }
 });
 ////////////////////////////////////////////////////
-//UNCONVERTED
+//CONVERTING
 ////////////////////////////////////////////////////
 app.get('/refresh_token', function (req, res) {
 
