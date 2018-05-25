@@ -1,4 +1,5 @@
-import { setAccessToken, getUserData } from '../SpotifyConnector'
+import { setAccessToken} from '../SpotifyConnector'
+import { getUserData } from './../Gather'
 import { io } from '../server'
 import { writeFile } from 'fs'
 

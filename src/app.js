@@ -300,7 +300,7 @@ app.get('/create', function (req, res) {
     });
 });
 ////////////////////////////////////////////////////
-//UNCONVERTED
+//CONVERTING
 ////////////////////////////////////////////////////
 app.get('/join', function (req, res) {
   res.redirect('/join.html');
