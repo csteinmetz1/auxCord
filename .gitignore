@@ -1,4 +1,5 @@
 node_modules/
 keys.js
+keys.ts
 data/
 dist/
