@@ -19,11 +19,12 @@ to store your client_id and client_secret. You can get your own API keys by crea
 
 ```
 // Spotify API keys
-export default {
-    clientId: 'YOUR_CLIENT_ID',
-    clientSecret: 'YOUR_CLIENT_SECRET',
-    redirectUri: 'YOUR_REDIRECT_URI' // should be 'localhost:8888' for testing
+const keys = {
+  clientId: 'YOUR_CLIENT_ID',
+  clientSecret: 'YOUR_CLIENT_SECRET',
+  redirectUri: 'YOUR_REDIRECT_URI' // should be 'localhost:8888' for testing
 }
+export default keys;
 ```
 
 Finally run the server.

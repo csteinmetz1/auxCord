@@ -1,5 +1,5 @@
 export interface Session {
-  user_id: number
+  user_id: string
   display_name: string
   access_token: string
 }
@@ -28,7 +28,7 @@ export interface AuxSyncRequest extends UserRequest {
 
 // User data
 export interface UserData {
-  userId: number
+  userId: string
   auxId: number
   display_name: string
   tracks: { [artistId: string]: { [trackId: string]: string } }

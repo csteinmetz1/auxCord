@@ -20,10 +20,20 @@ export interface TrackTable {
   [artistId: string]: { [trackId: string]: boolean }
 }
 
-export function transformTracks(tracks): TrackTable {
+
+export interface ArtistFormat {
+  id: string
+}
+
+export interface TrackFormat {
+  uri: string
+  artists: Array<ArtistFormat>
+}
+
+export function transformTracks(tracks: Array<TrackFormat>): TrackTable {
   // tracks are stored in a hash table
   // Note: there is no length attribute though.
-  var trackTable = {}
+  var trackTable: TrackTable = {}
   for (let i = 0; i < tracks.length; i++) {
     let artistUris = tracks[i].artists
 
@@ -43,7 +53,7 @@ export function mergeTracks(a: TrackTable, b: TrackTable): TrackTable {
   return Object.assign(a, b)
 }
 
-export function uniqueRandomIndices(needed, totalSize) {
+export function uniqueRandomIndices(needed: number, totalSize: number) {
   var values = [];
 
   // gets random unique values by using the property that the

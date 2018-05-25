@@ -1,4 +1,4 @@
-import { getNewAuxId } from './Data'
+import { getNewAuxId } from './DataConnector'
 import {
   getUsersPlaylists,
   getUsersTopTracks,
@@ -19,7 +19,7 @@ import {
 
 
 export class UserDataClass implements UserData {
-  userId: number
+  userId: string
   auxId: number
   display_name: string
   tracks: { [artistId: string]: { [trackId: string]: string } }
@@ -65,10 +65,10 @@ function DoTopTrackQueries(access_token: string, promises: TrackPromises) {
 
 
 // adds track promises for playlist queries
-function DoPlaylistQueries(userId: number, access_token: string, promises: TrackPromises) {
+function DoPlaylistQueries(userId: string, access_token: string, promises: TrackPromises) {
 
   interface Owner {
-    id: number
+    id: string
   }
 
   interface Track {
@@ -77,7 +77,7 @@ function DoPlaylistQueries(userId: number, access_token: string, promises: Track
   }
 
   interface Playlist {
-    id: number
+    id: string
     name: string
     owner: Owner
     items?: Array<Track>
@@ -108,7 +108,7 @@ function DoPlaylistQueries(userId: number, access_token: string, promises: Track
 }
 
 
-export function getUserData(req: UserDataRequest): Promise<UserDataClass> {
+export function getUserData(req: UserRequest): Promise<UserDataClass> {
   const { access_token, user_id } = req.session
 
   var user = new UserDataClass(req)
