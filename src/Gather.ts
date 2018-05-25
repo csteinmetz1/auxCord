@@ -76,7 +76,7 @@ export class UserData {
 }
 
 
-export function getUserData(req: UserDataRequest) {
+export function getUserData(req: UserDataRequest): Promise<UserData> {
   const { access_token } = req.session
 
   var user = new UserData(req)
@@ -88,7 +88,9 @@ export function getUserData(req: UserDataRequest) {
   DoTermQueries(access_token, promises)
 
 
-
+  return Promise.all(promises).then((results: Array<TrackTable>) => {
+    return user;
+  })
 }
 
 
