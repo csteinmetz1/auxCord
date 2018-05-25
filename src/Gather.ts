@@ -23,35 +23,6 @@ interface UserDataRequest {
 }
 
 
-interface TrackPromises extends Array<Promise<TrackTable>> { }
-
-function DoTermQueries(access_token: string, promises: TrackPromises) {
-  const terms = [
-    'short_term',
-    'medium_term',
-    'long_term'
-  ]
-
-
-  for (let i = 0; i < terms.length; i++) {
-    const term = terms[i]
-    promises.push(
-      getUsersTopTracks(access_token, term).then(transformTracks)
-    )
-  }
-
-  return promises
-}
-
-
-
-function DoPlaylistQueries(access_token: string, promises: TrackPromises) {
-
-
-}
-
-
-
 export class UserData {
   userId: number
   auxId: number
@@ -76,103 +47,95 @@ export class UserData {
 }
 
 
+
+interface TrackPromises extends Array<Promise<TrackTable>> { }
+
+// adds track promises for top track queries
+function DoTopTrackQueries(access_token: string, promises: TrackPromises) {
+  const terms = [
+    'short_term',
+    'medium_term',
+    'long_term'
+  ]
+
+  for (let i = 0; i < terms.length; i++) {
+    const term = terms[i]
+    promises.push(
+      getUsersTopTracks(access_token, term).then(transformTracks)
+    )
+  }
+
+  return promises
+}
+
+
+// adds track promises for playlist queries
+function DoPlaylistQueries(userId: number, access_token: string, promises: TrackPromises) {
+
+  interface Owner {
+    id: number
+  }
+
+  interface Track {
+    track: string
+
+  }
+
+  interface Playlist {
+    id: number
+    name: string
+    owner: Owner
+    items?: Array<Track>
+  }
+
+  interface Playlists {
+    items: Array<Playlist>
+  }
+
+  promises.push(
+    getUsersPlaylists(access_token, userId)
+      .then((res: Playlists) => {
+
+        var playlists = res.items.filter((playlist) => (playlist.name !== "auxCord"))
+
+        return Promise.all(playlists.map((playlist) => (
+          getUsersPlaylistTracks(access_token, playlist.owner.id, playlist.id)
+        )))
+      })
+      .then((res) => (
+        transformTracks(res.reduce((accumulator: Array<any>, playlist: Playlist) => (
+          accumulator.concat(playlist.items.map((item) => (
+            item.track
+          )))
+        ), []))
+      ))
+  )
+}
+
+
 export function getUserData(req: UserDataRequest): Promise<UserData> {
-  const { access_token } = req.session
+  const { access_token, user_id } = req.session
 
   var user = new UserData(req)
 
   var promises: TrackPromises = []
 
-
-
-  DoTermQueries(access_token, promises)
+  DoTopTrackQueries(access_token, promises)
+  DoPlaylistQueries(user_id, access_token, promises)
 
 
   return Promise.all(promises).then((results: Array<TrackTable>) => {
+    results.forEach((tt: TrackTable) => {
+      user.tracks = mergeTracks(user.tracks, tt)
+    })
+
+    user.totalTracks = 0
+    for (let artist in user.tracks) {
+      user.totalTracks += Object.keys(user.tracks[artist]).length
+    }
+
+    user.totalArtists = Object.keys(user.tracks).length
+
     return user;
   })
-}
-
-
-
-export function getUserDat(req) {
-  var userData = {
-    userId: req.session.user_id,
-    auxId: getNewAuxId(),
-    display_name: req.session.display_name,
-    tracks: {},
-    totalTracks: 0,
-    totalArtists: 0
-  };
-
-  let termQueries = [
-    'short_term',
-    'medium_term',
-    'long_term'
-  ];
-
-  var results = {};
-  var promises = [];
-
-  for (let i = 0; i < termQueries.length; i++) {
-    var term = termQueries[i];
-    promises.push(
-      getUsersTopTracks(req.session.access_token, term).then(
-        function (result) {
-          results[term] = transformTracks(result);
-        }
-      )
-    );
-  }
-  /////
-
-  promises.push(
-    getUsersPlaylists(req.session.access_token, userData.userId)
-      .then(
-        function (result: { items: Array<any> }) {
-
-          var playlists = result.items.filter(function (playlist) {
-            if (playlist.name === "auxCord") {
-              console.log('Found pre-exisitng auxCord playlist.');
-              return false;
-            }
-            else {
-              return true;
-            }
-          })
-
-          return Promise.all(playlists.map(function (playlist) {
-            return getUsersPlaylistTracks(req.session.access_token, playlist.owner.id, playlist.id);
-          }));
-        }
-      )
-      .then(
-        function (result) {
-          results['users_playlist_tracks'] = transformTracks(
-            result.reduce(function (accumulator: Array<any>, playlist: { items: Array<any> }) {
-              accumulator = accumulator.concat(playlist.items.map(function (item) {
-                return item.track;
-              }));
-              return accumulator;
-            }, [])
-          );
-        }
-      )
-  );
-
-
-  return Promise.all(promises).then(function () {
-    userData.tracks = {};
-    for (let type in results) {
-      userData.tracks = mergeTracks(userData.tracks, results[type]);
-    }
-
-    userData.totalTracks = 0;
-    for (let artist in userData.tracks) {
-      userData.totalTracks += Object.keys(userData.tracks[artist]).length
-    }
-
-    userData.totalArtists = Object.keys(userData.tracks).length;
-    return userData;
-  });
 }

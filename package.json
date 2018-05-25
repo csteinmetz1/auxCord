@@ -8,9 +8,9 @@
     "url": "https://github.com/csteinmetz1/auxCord"
   },
   "scripts": {
-    "serve": "node dist/server.js",
+    "serve": "node dist/Server.js",
     "build": "npm run build-ts && npm run copy-static-assets",
-    "watch-node": "nodemon dist/server.js",
+    "watch-node": "nodemon dist/Server.js",
     "build-ts": "tsc",
     "watch": "tsc -w",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
