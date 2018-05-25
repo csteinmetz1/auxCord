@@ -1,7 +1,7 @@
 import { stateKey } from './../server'
 import { stringify } from 'querystring'
 import keys from './../Keys'
-import * as request from 'request'
+import request from 'request'
 import {
   setAccessToken,
   getUserId

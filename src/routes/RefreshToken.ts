@@ -2,7 +2,7 @@ import {
   client_id,
   client_secret
 } from './../Keys'
-import * as request from 'request'
+import request from 'request'
 
 
 export function refresh_token(req, res) {
