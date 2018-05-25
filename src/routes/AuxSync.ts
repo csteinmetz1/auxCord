@@ -1,75 +1,100 @@
+import { UserDataClass, getUserData } from './../Gather'
 import {
-  existsSync, 
-  unlink,
-  readFileSync
-} from 'fs'
-import { getUserData } from './../Gather'
-import { 
-  setAccessToken, 
-  createSpotifyPlaylist 
+  setAccessToken,
+  createSpotifyPlaylist
+
 } from './../SpotifyConnector'
 import { io } from '../server'
 
-export function auxsync(req, res) {
-  var auxId = req.body.auxId;
-  var filepath = 'data/' + auxId + '.json';
-  if (existsSync(filepath)) {
-    // get user a data
-    var userA = JSON.parse(readFileSync(filepath, 'utf-8'));
+import {
+  userIdExists,
+  getUserById,
+  deleteById
+} from '../Data'
 
-    getUserData(req).then(function (userB) {
-
-      setAccessToken(req.session.access_token);
-      userB.display_name = userB.display_name;
-
-      var matched_tracks = [];
-      var matched_artists = [];
-      console.log("User A: ", userA.userId, userA.totalTracks, userA.totalArtists);
-      console.log("User B: ", userB.userId, userB.totalTracks, userB.totalArtists);
-
-      for (let artistId in userA.tracks) {
-        if (userB.tracks[artistId] !== undefined) {
-          matched_tracks = matched_tracks.concat(Object.keys(Object.assign(userA.tracks[artistId], userB.tracks[artistId])));
-          matched_artists.push(artistId);
-        }
-      }
-      console.log('creating playlist');
-      return createSpotifyPlaylist(userB, userA, req.session.access_token, matched_tracks, 50)
-        .then(function () {
-          var trackMatches = matched_tracks.length;
-          var artistMatches = matched_artists.length;
-          var max_matches = Math.min(userA.totalArtists, userB.totalArtists);
-          var per_match = Math.floor((artistMatches / max_matches) * 100);
-
-          console.log("created playlist");
-          console.log("Users are", per_match, "% match.");
+import {
+  AuxSyncRequest,
+  UserResponse,
+  UserData
+} from '../Types'
 
 
-          io.to(userA.socketId)
-            .emit("done", {
-              playlistURL: "https://open.spotify.com/embed/user/" + 
-              userB.userId + "/playlist/" + userB.newPlaylistId,
-              per_match: per_match
-            });
 
-          res.render('done.ejs', {
-            playlistURL: "https://open.spotify.com/embed/user/" + userB.userId + 
-            "/playlist/" + userB.newPlaylistId,
+function GenerateCommonPlaylist(userA: UserData, userB: UserData, access_token: string, res: UserResponse) {
+  var matched_tracks: Array<string> = [];
+  var matched_artists: Array<string> = [];
+
+  console.log("User A: ", userA.userId, userA.totalTracks, userA.totalArtists);
+  console.log("User B: ", userB.userId, userB.totalTracks, userB.totalArtists);
+
+  for (let artistId in userA.tracks) {
+    if (userB.tracks[artistId] !== undefined) {
+
+      matched_tracks = matched_tracks.concat(
+        Object.keys(
+          Object.assign(
+            userA.tracks[artistId],
+            userB.tracks[artistId]
+          )
+        )
+      )
+      matched_artists.push(artistId);
+    }
+  }
+
+
+  console.log('creating playlist')
+
+  return createSpotifyPlaylist(userB, userA, access_token, matched_tracks, 50)
+    .then((newPlaylistId: number) => {
+
+      var trackMatches = matched_tracks.length
+      var artistMatches = matched_artists.length;
+      var max_matches = Math.min(userA.totalArtists, userB.totalArtists);
+      var per_match = Math.floor((artistMatches / max_matches) * 100);
+
+      console.log("created playlist");
+      console.log("Users are", per_match, "% match.");
+
+      if (userA.socketId === undefined) throw new Error('no socket id for user a')
+      else {
+        io.to(userA.socketId)
+          .emit("done", {
+            playlistURL: "https://open.spotify.com/embed/user/" +
+              userB.userId + "/playlist/" + newPlaylistId,
             per_match: per_match
           });
+      }
 
-          unlink('data/' + auxId + '.json', function (err) {
-            if (err) throw err;
-            console.log('Deleted', 'data/' + auxId + '.json');
-          });
-        });
+
+
+      res.render('done.ejs', {
+        playlistURL: "https://open.spotify.com/embed/user/" + userB.userId +
+          "/playlist/" + newPlaylistId,
+        per_match: per_match
+      });
+
+
+
+      deleteById(userA.auxId)
     });
+}
+
+
+
+export function auxsync(req: AuxSyncRequest, res: UserResponse) {
+  var auxId = req.body.auxId;
+
+  if (!userIdExists(auxId)) {
+    res.redirect('/join.html')
+    return
   }
-  else {
-    res.redirect('/join.html');
-    //io.on('connection', function (socket) {
-    //  io.to(socket.id).emit("error", auxId + " is not a valid aux!");
-    //  console.log('Invalid aux.')
-    //});
-  }
+
+  // get user a data
+  var userA: UserData = getUserById(auxId)
+
+  return getUserData(req).then((userB) => {
+    setAccessToken(req.session.access_token)
+    return GenerateCommonPlaylist(userA, userB, req.session.access_token, res)
+  })
 }

@@ -10,30 +10,25 @@ import {
   mergeTracks
 } from './tools'
 
+import {
+  UserRequest,
+  UserData
+} from './Types'
 
 
-export interface Session {
-  user_id: number
-  display_name: string
-  access_token: string
-}
-
-interface UserDataRequest {
-  session: Session
-}
 
 
-export class UserData {
+export class UserDataClass implements UserData {
   userId: number
   auxId: number
   display_name: string
-  tracks: {}
+  tracks: { [artistId: string]: { [trackId: string]: string } }
   totalTracks: number
   totalArtists: number
 
-  socketId?: number
+  socketId?: string
 
-  constructor(req: UserDataRequest) {
+  constructor(req: UserRequest) {
     this.userId = req.session.user_id
     this.auxId = getNewAuxId()
 
@@ -113,10 +108,10 @@ function DoPlaylistQueries(userId: number, access_token: string, promises: Track
 }
 
 
-export function getUserData(req: UserDataRequest): Promise<UserData> {
+export function getUserData(req: UserDataRequest): Promise<UserDataClass> {
   const { access_token, user_id } = req.session
 
-  var user = new UserData(req)
+  var user = new UserDataClass(req)
 
   var promises: TrackPromises = []
 

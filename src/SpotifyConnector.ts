@@ -1,4 +1,4 @@
-import * as SpotifyWebApi from 'spotify-web-api-node'
+import SpotifyWebApi from 'spotify-web-api-node'
 import keys from './Keys'
 import request from 'request'
 import { uniqueRandomIndices } from './Tools'
@@ -79,13 +79,14 @@ export function createSpotifyPlaylist(user, userA, access_token, tracks, maxEntr
   }).then(
     function (result) {
       var playlistId = result.body.id;
-      user.newPlaylistId = playlistId; // adds property to object
 
       var sampledTracks = uniqueRandomIndices(maxEntries, tracks.length).map(function (randomIndex) {
         return tracks[randomIndex];
       });
 
-      return spotifyApi.addTracksToPlaylist(user.userId, playlistId, sampledTracks).catch((err) => {
+      return spotifyApi.addTracksToPlaylist(user.userId, playlistId, sampledTracks).then(() => (
+        playlistId
+      )).catch((err: any) => {
         console.log(err);
       });
     }

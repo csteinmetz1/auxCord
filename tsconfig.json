@@ -3,7 +3,7 @@
     "module": "commonjs",
     "esModuleInterop": false,
     "target": "es6",
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
