@@ -54,7 +54,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // routes
 app
-  .get('/login', login)
+  .get('/login', login) // done
   .get('/callback', callback)
   .get('/create', create)
   .get('/join', join)

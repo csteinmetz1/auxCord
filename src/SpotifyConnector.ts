@@ -9,7 +9,7 @@ var spotifyApi = new SpotifyWebApi(keys);
 
 
 
-function Get(options: request.Options) {
+function Get(options: request.Options): Promise<any> {
   return new Promise((resolve, reject) => {
     request.get(options, (error, response, body) => {
       if (error) reject(error)
@@ -24,8 +24,14 @@ export function setAccessToken(access_token: string) {
   spotifyApi.setAccessToken(access_token)
 }
 
+
+interface UserIdResult extends Promise<{
+  id: number,
+  display_name: string
+}> { }
+
 ////////////////////////////////////////////////////////////
-export function getUserId(access_token) {
+export function getUserId(access_token): UserIdResult {
   return Get({
     url: 'https://api.spotify.com/v1/me',
     headers: { 'Authorization': 'Bearer ' + access_token },
