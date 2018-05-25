@@ -177,6 +177,7 @@ function transformTracks(tracks) {
   };
   return trackTable;
 }
+
 function mergeTracks(a, b) {
   return Object.assign(a, b);
 }
