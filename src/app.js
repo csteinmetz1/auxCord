@@ -33,7 +33,8 @@ var spotifyApi = new SpotifyWebApi({
   redirectUri: keys.redirect_uri
 });
 ////////////////////////////////////////////////////
-
+//CONVERTED
+////////////////////////////////////////////////////
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -51,6 +52,7 @@ var generateRandomString = function (length) {
 
 var stateKey = 'spotify_auth_state';
 ////////////////////// APP //////////////////////////
+//CONVERSTION UNCERTAIN
 var app = express();
 app.set('view engine', 'ejs'); // setup ejs templating
 
@@ -89,7 +91,11 @@ app.get('/login', function (req, res) {
       state: state
     }));
 });
+//END UNCERTAINTY
 
+////////////////////////////////////////////////////
+//CONVERTED
+////////////////////////////////////////////////////
 app.get('/callback', function (req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -146,7 +152,9 @@ app.get('/callback', function (req, res) {
 });
 
 
-
+////////////////////////////////////////////////////
+//CONVERTED
+////////////////////////////////////////////////////
 function getNewAuxId() {
   let auxId = Math.floor(1000 + Math.random() * 9000);
   while (fs.existsSync('data/' + auxId + '.json')) {
@@ -157,7 +165,9 @@ function getNewAuxId() {
   return auxId;
 }
 
-
+////////////////////////////////////////////////////
+//CONVERTED
+////////////////////////////////////////////////////
 // I think we only care about the track uri, this will have to change otherwise
 function transformTracks(tracks) {
   // tracks are stored in a hash table
@@ -177,17 +187,22 @@ function transformTracks(tracks) {
   };
   return trackTable;
 }
+////////////////////////////////////////////////////
+//CONVERTED
+////////////////////////////////////////////////////
 function mergeTracks(a, b) {
   return Object.assign(a, b);
 }
 
 
-
+////////////////////////////////////////////////////
+//CONVERTED
+////////////////////////////////////////////////////
 function getUserData(req) {
   var userData = {
     userId: req.session.user_id,
     auxId: getNewAuxId(),
-    display_name : req.session.display_name,
+    display_name: req.session.display_name,
     tracks: []
   };
 
@@ -204,9 +219,9 @@ function getUserData(req) {
     var term = termQueries[i];
     promises.push(
       getUsersTopTracks(req.session.access_token, term).then(
-	function (result) {
-	  results[term] = transformTracks(result);
-	}
+        function (result) {
+          results[term] = transformTracks(result);
+        }
       )
     );
   }
@@ -215,34 +230,34 @@ function getUserData(req) {
   promises.push(
     getUsersPlaylists(req.session.access_token, userData.userId)
       .then(
-	function (result) {
+        function (result) {
 
-    var playlists = result.items.filter(function(playlist) {
-      if (playlist.name === "auxCord") {
-        console.log('Found pre-exisitng auxCord playlist.');
-        return false;
-      }
-      else {
-        return true;
-      }
-    })
+          var playlists = result.items.filter(function (playlist) {
+            if (playlist.name === "auxCord") {
+              console.log('Found pre-exisitng auxCord playlist.');
+              return false;
+            }
+            else {
+              return true;
+            }
+          })
 
-	  return Promise.all(playlists.map(function (playlist) {
-        return getUsersPlaylistTracks(req.session.access_token, playlist.owner.id, playlist.id);
-	  }));
-	}
+          return Promise.all(playlists.map(function (playlist) {
+            return getUsersPlaylistTracks(req.session.access_token, playlist.owner.id, playlist.id);
+          }));
+        }
       )
       .then(
-	function (result) {
-	  results['users_playlist_tracks'] = transformTracks(
-	    result.reduce(function (accumulator, playlist) {
-	      accumulator = accumulator.concat(playlist.items.map(function (item) {
-		return item.track;
-	      }));
-	      return accumulator;
-	    }, [])
-	  );
-	}
+        function (result) {
+          results['users_playlist_tracks'] = transformTracks(
+            result.reduce(function (accumulator, playlist) {
+              accumulator = accumulator.concat(playlist.items.map(function (item) {
+                return item.track;
+              }));
+              return accumulator;
+            }, [])
+          );
+        }
       )
   );
 
@@ -263,7 +278,9 @@ function getUserData(req) {
   });
 }
 
-
+////////////////////////////////////////////////////
+//CONVERTING
+////////////////////////////////////////////////////
 app.get('/create', function (req, res) {
   spotifyApi.setAccessToken(req.session.access_token);
   getUserData(req).then(
@@ -277,17 +294,21 @@ app.get('/create', function (req, res) {
 
         var data = JSON.stringify(userData);
         fs.writeFile('data/' + userData.auxId + '.json', data, 'utf8', function (err) {
-            if (err) throw err;
+          if (err) throw err;
         });
       });
     });
 });
-
+////////////////////////////////////////////////////
+//UNCONVERTED
+////////////////////////////////////////////////////
 app.get('/join', function (req, res) {
   res.redirect('/join.html');
 });
 
-
+////////////////////////////////////////////////////
+//UNCONVERTED
+////////////////////////////////////////////////////
 function uniqueRandomIndices(needed, totalSize) {
   var values = [];
 
@@ -303,26 +324,32 @@ function uniqueRandomIndices(needed, totalSize) {
   return values;
 }
 
-
-function createSpotifyPlaylist(user, userA ,access_token,  tracks, maxEntries) {
-  return spotifyApi.createPlaylist(user.userId, 'auxCord', { 'public': true ,
-  "description": "Synced with " + user.display_name + " and " + userA.display_name }).then(
-    function(result) {
+////////////////////////////////////////////////////
+//UNCONVERTED
+////////////////////////////////////////////////////
+function createSpotifyPlaylist(user, userA, access_token, tracks, maxEntries) {
+  return spotifyApi.createPlaylist(user.userId, 'auxCord', {
+    'public': true,
+    "description": "Synced with " + user.display_name + " and " + userA.display_name
+  }).then(
+    function (result) {
       var playlistId = result.body.id;
       user.newPlaylistId = playlistId; // adds property to object
 
       var sampledTracks = uniqueRandomIndices(maxEntries, tracks.length).map(function (randomIndex) {
-	return tracks[randomIndex];
+        return tracks[randomIndex];
       });
 
       return spotifyApi.addTracksToPlaylist(user.userId, playlistId, sampledTracks).catch((err) => {
-	console.log(err);
+        console.log(err);
       });
     }
   );
 }
 
-
+////////////////////////////////////////////////////
+//UNCONVERTED
+////////////////////////////////////////////////////
 app.post('/aux_sync', function (req, res) {
   var auxId = req.body.auxId;
   var filepath = 'data/' + auxId + '.json';
@@ -341,39 +368,39 @@ app.post('/aux_sync', function (req, res) {
       console.log("User B: ", userB.userId, userB.totalTracks, userB.totalArtists);
 
       for (let artistId in userA.tracks) {
-	if (userB.tracks[artistId] !== undefined) {
-    matched_tracks = matched_tracks.concat(Object.keys(Object.assign(userA.tracks[artistId], userB.tracks[artistId])));
-    matched_artists.push(artistId);
-	}
+        if (userB.tracks[artistId] !== undefined) {
+          matched_tracks = matched_tracks.concat(Object.keys(Object.assign(userA.tracks[artistId], userB.tracks[artistId])));
+          matched_artists.push(artistId);
+        }
       }
       console.log('creating playlist');
       return createSpotifyPlaylist(userB, userA, req.session.access_token, matched_tracks, 50)
-	.then(function(){
+        .then(function () {
           var trackMatches = matched_tracks.length;
           var artistMatches = matched_artists.length;
           var max_matches = Math.min(userA.totalArtists, userB.totalArtists);
-          var per_match = Math.floor((artistMatches / max_matches)*100);
+          var per_match = Math.floor((artistMatches / max_matches) * 100);
 
           console.log("created playlist");
-	  console.log("Users are",  per_match, "% match.");
+          console.log("Users are", per_match, "% match.");
 
 
           io.to(userA.socketId)
-	    .emit("done", {
-	      playlistURL: "https://open.spotify.com/embed/user/"+ userB.userId + "/playlist/" + userB.newPlaylistId,
-	      per_match : per_match
-	    });
+            .emit("done", {
+              playlistURL: "https://open.spotify.com/embed/user/" + userB.userId + "/playlist/" + userB.newPlaylistId,
+              per_match: per_match
+            });
 
           res.render('done.ejs', {
-	    playlistURL : "https://open.spotify.com/embed/user/" + userB.userId + "/playlist/" + userB.newPlaylistId,
-	    per_match : per_match
-	  });
-
-          fs.unlink('data/' + auxId + '.json', function(err) {
-	    if (err) throw err;
-	    console.log('Deleted', 'data/' + auxId + '.json');
+            playlistURL: "https://open.spotify.com/embed/user/" + userB.userId + "/playlist/" + userB.newPlaylistId,
+            per_match: per_match
           });
-	});
+
+          fs.unlink('data/' + auxId + '.json', function (err) {
+            if (err) throw err;
+            console.log('Deleted', 'data/' + auxId + '.json');
+          });
+        });
     });
   }
   else {
@@ -384,7 +411,9 @@ app.post('/aux_sync', function (req, res) {
     //});
   }
 });
-
+////////////////////////////////////////////////////
+//UNCONVERTED
+////////////////////////////////////////////////////
 app.get('/refresh_token', function (req, res) {
 
   // requesting access token from refresh token
@@ -412,6 +441,9 @@ app.get('/refresh_token', function (req, res) {
 ///////////////////////////////////////////
 //  Custom Methods
 ///////////////////////////////////////////
+////////////////////////////////////////////////////
+//CONVERTED
+////////////////////////////////////////////////////
 var getUserId = function (access_token) {
   var options = {
     url: 'https://api.spotify.com/v1/me',
@@ -429,7 +461,9 @@ var getUserId = function (access_token) {
     });
   });
 };
-
+////////////////////////////////////////////////////
+//CONVERTED
+////////////////////////////////////////////////////
 var getUsersTopTracks = function (access_token, term) {
   var options = {
     url: 'https://api.spotify.com/v1/me/top/tracks?time_range=' + term + '&limit=50',
@@ -447,7 +481,9 @@ var getUsersTopTracks = function (access_token, term) {
     });
   });
 };
-
+////////////////////////////////////////////////////
+//CONVERTED
+////////////////////////////////////////////////////
 var getUsersPlaylists = function (access_token, userId) {
   var options = {
     url: 'https://api.spotify.com/v1/users/' + userId + '/playlists?limit=50',
@@ -465,7 +501,9 @@ var getUsersPlaylists = function (access_token, userId) {
     });
   });
 };
-
+////////////////////////////////////////////////////
+//CONVERTED
+////////////////////////////////////////////////////
 var getUsersPlaylistTracks = function (access_token, userId, playlistId) {
   var options = {
     url: 'https://api.spotify.com/v1/users/' + userId + '/playlists/' + playlistId + '/tracks?fields=items(track)&limit=50',
