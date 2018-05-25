@@ -1,7 +1,7 @@
-import { generateRandomString } from './Tools'
+import { generateRandomString } from './../Tools'
 import { stringify } from 'querystring'
-import keys from './Keys'
-import { stateKey } from './server'
+import keys from './../Keys'
+import { stateKey } from './../server'
 
 
 export function login(req, res) {

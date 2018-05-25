@@ -13,7 +13,7 @@ import * as cookieParser from 'cookie-parser'
 import { generateRandomString } from './Tools'
 
 // routes
-import { login } from './Login'
+import { login } from './routes/Login'
 
 const stateKey = 'spotify_auth_state'
 export { stateKey }
