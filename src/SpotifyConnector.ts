@@ -2,6 +2,10 @@ import SpotifyWebApi from 'spotify-web-api-node'
 import keys from './Keys'
 import request from 'request'
 import { uniqueRandomIndices } from './Tools'
+import {
+  UserData,
+  UserResponse,
+} from './Types'
 
 
 var spotifyApi = new SpotifyWebApi(keys);
@@ -31,7 +35,7 @@ interface UserIdResult extends Promise<{
 }> { }
 
 ////////////////////////////////////////////////////////////
-export function getUserId(access_token): UserIdResult {
+export function getUserId(access_token: string): UserIdResult {
   return Get({
     url: 'https://api.spotify.com/v1/me',
     headers: { 'Authorization': 'Bearer ' + access_token },
@@ -46,7 +50,7 @@ interface TrackList {
 
 
 ////////////////////////////////////////////////////////////
-export function getUsersTopTracks(access_token, term) {
+export function getUsersTopTracks(access_token: string, term: string) {
   return Get({
     url: 'https://api.spotify.com/v1/me/top/tracks?time_range=' + term + '&limit=50',
     headers: { 'Authorization': 'Bearer ' + access_token },
@@ -54,7 +58,7 @@ export function getUsersTopTracks(access_token, term) {
   }).then((res: TrackList) => res.items)
 }
 ////////////////////////////////////////////////////////////
-export function getUsersPlaylists(access_token, userId) {
+export function getUsersPlaylists(access_token: string, userId: string) {
   return Get({
     url: 'https://api.spotify.com/v1/users/' + userId + '/playlists?limit=50',
     headers: { 'Authorization': 'Bearer ' + access_token },
@@ -63,7 +67,7 @@ export function getUsersPlaylists(access_token, userId) {
 }
 
 ////////////////////////////////////////////////////////////
-export function getUsersPlaylistTracks(access_token, userId, playlistId) {
+export function getUsersPlaylistTracks(access_token: string, userId: string, playlistId: string) {
   return Get({
     url: 'https://api.spotify.com/v1/users/' + userId + '/playlists/' + playlistId + '/tracks?fields=items(track)&limit=50',
     headers: { 'Authorization': 'Bearer ' + access_token },
@@ -72,19 +76,20 @@ export function getUsersPlaylistTracks(access_token, userId, playlistId) {
 }
 
 ////////////////////////////////////////////////////////////
-export function createSpotifyPlaylist(user, userA, access_token, tracks, maxEntries) {
-  return spotifyApi.createPlaylist(user.userId, 'auxCord', {
+// makes spotify playlist under userB
+export function createSpotifyPlaylist(userB: UserData, userA: UserData, access_token: string, tracks: Array<string>, maxEntries: number) {
+  return spotifyApi.createPlaylist(userB.userId, 'auxCord', {
     'public': true,
-    "description": "Synced with " + user.display_name + " and " + userA.display_name
+    "description": "Synced with " + userB.display_name + " and " + userA.display_name
   }).then(
-    function (result) {
+    function (result: { body: { id: string } }) {
       var playlistId = result.body.id;
 
       var sampledTracks = uniqueRandomIndices(maxEntries, tracks.length).map(function (randomIndex) {
         return tracks[randomIndex];
       });
 
-      return spotifyApi.addTracksToPlaylist(user.userId, playlistId, sampledTracks).then(() => (
+      return spotifyApi.addTracksToPlaylist(userB.userId, playlistId, sampledTracks).then(() => (
         playlistId
       )).catch((err: any) => {
         console.log(err);
