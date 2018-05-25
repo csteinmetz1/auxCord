@@ -7,6 +7,7 @@ export interface Session {
 export interface Query {
   code: string
   state: string
+  refresh_token: string
 }
 
 
@@ -21,13 +22,14 @@ export interface UserResponse {
   render: (
     filename: string,
     options: {
-      playlistURL: string,
-      per_match: number
+      [field: string]: string | number
     }
   ) => void
 
-  clearCookie: (stateKey: string) => void
+  send: ({ access_token: string }) => void
 
+  clearCookie: (stateKey: string) => void
+  cookie: (stateKey: string, state: string) => void
 }
 
 

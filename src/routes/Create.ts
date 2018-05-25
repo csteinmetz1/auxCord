@@ -3,9 +3,14 @@ import { getUserData } from './../Gather'
 import { io } from '../server'
 import { writeFile } from 'fs'
 
+import {
+  UserRequest,
+  UserResponse
+} from '../Types'
 
-export function create(req, res) {
-  setAccessToken(req.session.acess_token)
+
+export function create(req: UserRequest, res: UserResponse) {
+  setAccessToken(req.session.access_token)
   getUserData(req).then((userData) => {
 
     res.render('create.ejs', { auxId: userData.auxId })

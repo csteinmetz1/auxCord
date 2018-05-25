@@ -3,8 +3,13 @@ import { stringify } from 'querystring'
 import keys from './../Keys'
 import { stateKey } from './../server'
 
+import {
+  UserRequest,
+  UserResponse
+} from '../Types'
 
-export function login(req, res) {
+
+export function login(req: UserRequest, res: UserResponse) {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
