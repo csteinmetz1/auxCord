@@ -20,7 +20,9 @@ var path = require('path');
 /////////// MAKE SURE YOU HAVE THIS FILE /////////
 var keys = require('./keys'); // Spotify API keys
 
-
+////////////////////////////////////////////////////
+//CONVERTED in keys
+////////////////////////////////////////////////////
 // Set API keys for custom resquests
 var client_id = keys.client_id;
 var client_secret = keys.client_secret;
@@ -52,7 +54,7 @@ var generateRandomString = function (length) {
 
 var stateKey = 'spotify_auth_state';
 ////////////////////// APP //////////////////////////
-//CONVERSTION UNCERTAIN
+//CONVERSTION in server.ts??
 var app = express();
 app.set('view engine', 'ejs'); // setup ejs templating
 
@@ -94,7 +96,7 @@ app.get('/login', function (req, res) {
 //END UNCERTAINTY
 
 ////////////////////////////////////////////////////
-//CONVERTED
+//CONVERTED in routes/Callback.ts
 ////////////////////////////////////////////////////
 app.get('/callback', function (req, res) {
   // your application requests refresh and access tokens
@@ -153,7 +155,7 @@ app.get('/callback', function (req, res) {
 
 
 ////////////////////////////////////////////////////
-//CONVERTED
+//CONVERTED in Data.ts
 ////////////////////////////////////////////////////
 function getNewAuxId() {
   let auxId = Math.floor(1000 + Math.random() * 9000);
@@ -166,7 +168,7 @@ function getNewAuxId() {
 }
 
 ////////////////////////////////////////////////////
-//CONVERTED
+//CONVERTED in Tools.ts
 ////////////////////////////////////////////////////
 // I think we only care about the track uri, this will have to change otherwise
 function transformTracks(tracks) {
@@ -188,7 +190,7 @@ function transformTracks(tracks) {
   return trackTable;
 }
 ////////////////////////////////////////////////////
-//CONVERTED
+//CONVERTED in Tools.ts
 ////////////////////////////////////////////////////
 function mergeTracks(a, b) {
   return Object.assign(a, b);
@@ -196,7 +198,7 @@ function mergeTracks(a, b) {
 
 
 ////////////////////////////////////////////////////
-//CONVERTED
+//CONVERTED in Gather.ts
 ////////////////////////////////////////////////////
 function getUserData(req) {
   var userData = {
@@ -279,7 +281,7 @@ function getUserData(req) {
 }
 
 ////////////////////////////////////////////////////
-//CONVERTING
+//CONVERTED in routes/Create.ts
 ////////////////////////////////////////////////////
 app.get('/create', function (req, res) {
   spotifyApi.setAccessToken(req.session.access_token);
@@ -300,14 +302,14 @@ app.get('/create', function (req, res) {
     });
 });
 ////////////////////////////////////////////////////
-//CONVERTED
+//CONVERTED in routes/Join.ts
 ////////////////////////////////////////////////////
 app.get('/join', function (req, res) {
   res.redirect('/join.html');
 });
 
 ////////////////////////////////////////////////////
-//UNCONVERTED
+//CONVERTED in Tools.ts
 ////////////////////////////////////////////////////
 function uniqueRandomIndices(needed, totalSize) {
   var values = [];
@@ -325,7 +327,7 @@ function uniqueRandomIndices(needed, totalSize) {
 }
 
 ////////////////////////////////////////////////////
-//UNCONVERTED
+//CONVERTED in SpotifyConnector.ts
 ////////////////////////////////////////////////////
 function createSpotifyPlaylist(user, userA, access_token, tracks, maxEntries) {
   return spotifyApi.createPlaylist(user.userId, 'auxCord', {
@@ -348,7 +350,7 @@ function createSpotifyPlaylist(user, userA, access_token, tracks, maxEntries) {
 }
 
 ////////////////////////////////////////////////////
-//CONVERTING
+//CONVERTING in routes/AuxSync.ts
 ////////////////////////////////////////////////////
 app.post('/aux_sync', function (req, res) {
   var auxId = req.body.auxId;
@@ -412,7 +414,7 @@ app.post('/aux_sync', function (req, res) {
   }
 });
 ////////////////////////////////////////////////////
-//CONVERTING
+//CONVERTING in RefreshToken.ts
 ////////////////////////////////////////////////////
 app.get('/refresh_token', function (req, res) {
 
@@ -442,7 +444,7 @@ app.get('/refresh_token', function (req, res) {
 //  Custom Methods
 ///////////////////////////////////////////
 ////////////////////////////////////////////////////
-//CONVERTED
+//CONVERTED in SpotifyConnector.ts
 ////////////////////////////////////////////////////
 var getUserId = function (access_token) {
   var options = {
@@ -462,7 +464,7 @@ var getUserId = function (access_token) {
   });
 };
 ////////////////////////////////////////////////////
-//CONVERTED
+//CONVERTED in SpotifyConnector.ts
 ////////////////////////////////////////////////////
 var getUsersTopTracks = function (access_token, term) {
   var options = {
@@ -482,7 +484,7 @@ var getUsersTopTracks = function (access_token, term) {
   });
 };
 ////////////////////////////////////////////////////
-//CONVERTED
+//CONVERTED in SpotifyConnector.ts
 ////////////////////////////////////////////////////
 var getUsersPlaylists = function (access_token, userId) {
   var options = {
@@ -502,7 +504,7 @@ var getUsersPlaylists = function (access_token, userId) {
   });
 };
 ////////////////////////////////////////////////////
-//CONVERTED
+//CONVERTED in SpotifyConnector.ts
 ////////////////////////////////////////////////////
 var getUsersPlaylistTracks = function (access_token, userId, playlistId) {
   var options = {

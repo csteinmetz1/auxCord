@@ -1,3 +1,5 @@
+import { setAccessToken } from './SpotifyConnector'
+
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -34,4 +36,19 @@ export function transformTracks(tracks) {
 
 export function mergeTracks(a, b) {
   return Object.assign(a, b)
+}
+
+export function uniqueRandomIndices (needed, totalSize) {
+  var values = [];
+
+  // gets random unique values by using the property that the
+  // likelihood of any element we are looking at as being selected as
+  // the needed values divided by the total values
+  for (let remaining = totalSize; remaining > 0; remaining--) {
+    if (Math.random() < needed / remaining) {
+      values.push(remaining - 1);
+      needed--;
+    }
+  }
+  return values;
 }
