@@ -1,0 +1,165 @@
+body {
+    /*background: linear-gradient(135deg ,#FAAC4D, #FA574D);*/
+    background-color: #FA574D;
+    font-family: 'Roboto', Helvetica, Arial;
+    text-align: center;
+    color: white;
+}
+.headText {
+    margin-top: 5%;
+    text-align: center;
+}
+.loginButton {
+    text-align: center;
+}
+
+
+h1 {
+    font-weight: lighter;
+}
+.desc {
+    font-weight: lighter;
+    font-size: 20px;
+}
+
+img {
+    width: 500px;
+    height: 300px;
+}
+
+@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+.fade-in {
+    opacity:0;  /* make things invisible upon start */
+    -webkit-animation:fadeIn ease-in 1;  /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
+    -moz-animation:fadeIn ease-in 1;
+    animation:fadeIn ease-in 1;
+
+    -webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+    -moz-animation-fill-mode:forwards;
+    animation-fill-mode:forwards;
+
+    -webkit-animation-duration:1s;
+    -moz-animation-duration:1s;
+    animation-duration:1s;
+}
+
+.fade-in.one {
+    -webkit-animation-delay: 0.0s;
+    -moz-animation-delay: 0.0s;
+    animation-delay: 0.0s;
+}
+
+.fade-in.two {
+    -webkit-animation-delay: 0.5s;
+    -moz-animation-delay: 0.5s;
+    animation-delay: 0.5s;
+}
+
+@media only screen and (min-width : 320px) and (max-width : 800px) {
+    /* For mobile phones: */
+    h1 {
+	font-size: 5em;
+	margin-top: 5px;
+	margin-bottom: 5px;
+    }
+
+    .button:hover {
+	cursor: pointer;
+    }
+
+    .button {
+	background-color: #FA574D; /* Green */
+	border: 4px solid white;
+	color: white;
+	padding: 4px 12px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 64px;
+	-webkit-transition-duration: 0.4s; /* Safari */
+	transition-duration: 0.4s;
+	font-weight: lighter;
+	outline: none
+    }
+
+}
+
+.button {
+    background-color: #FA574D; /* Green */
+    border: 2px solid white;
+    color: white;
+    width:200px;
+    padding: 16px 16px; /*54.5px*/
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 24px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    font-weight: lighter;
+    outline: none
+}
+
+.button:hover {
+    background-color: rgb(255, 255, 255); /* Green */
+    color: #FA574D;
+}
+
+.code {
+    font-size: 60px;
+    margin-top: 0%;
+    margin-bottom: 0%;
+}
+
+.move {
+    margin-top: 0%;
+    font-weight: lighter;
+    font-size: 20px;
+}
+
+.form {
+    font-weight: lighter;
+    outline: none;
+    -webkit-user-select: none;  /* Chrome 49+ */
+    -moz-user-select: none;     /* Firefox 43+ */
+    -ms-user-select: none;      /* No support yet */
+    user-select: none;          /* Likely future */
+}
+
+input {
+    padding: 12px 12px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    background-color: rgb(241, 115, 109);
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    font-weight: lighter;
+}
+input:not([type=submit]) {
+    width: 200px;
+}
+
+input::-webkit-input-placeholder {
+    color: white !important;
+}
+
+input:-moz-placeholder { /* Firefox 18- */
+    color: white !important;
+}
+
+input::-moz-placeholder {  /* Firefox 19+ */
+    color: white !important;
+}
+
+input:-ms-input-placeholder {
+    color: white !important;
+}

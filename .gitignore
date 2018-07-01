@@ -1,3 +1,6 @@
 node_modules/
 keys.js
 data/
+debug.log
+dist/
+.env

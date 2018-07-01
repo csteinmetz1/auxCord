@@ -7,7 +7,7 @@
     <!-- Style related links -->
     <link rel="stylesheet" href="css/main.css">
     <!--link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet"-->
-    <!-- Scripts -->
+
     <script type="text/javascript">
       function login() {location.href = '/login'}
     </script>
@@ -21,22 +21,16 @@
   <body>
     <!-- Header 1 -->
     <div class="headText" >
-      <a href="/" >
+      <a href="index.html" >
 	<img src="svg/logo_white.svg">
       </a>
     </div>
-
-    <!-- Login Button -->
-    <div class="loginButton fade-in one" >
-      <button class="button" type="btn" onclick="login();" >
-	<span>
-	  Login
-	</span>
-      </button>
-      <br>
-      <p class="desc">Sync your Spotify with your friends.</p>
-    </div>
-
+    <h1>aux Synchronized</h1>
+    <p class="desc" >
+      Here's the playlist generated for you and your friends.
+    </p>
+    <iframe src=<%= playlistURL %> width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
+    <h2> <%=per_match%> % match</h2>
   </body>
 
 </html>

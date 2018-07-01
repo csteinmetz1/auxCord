@@ -7,7 +7,7 @@ socket.on('done', function(data){
     ifrm.setAttribute('height','380');
     ifrm.setAttribute('frameborder','0');
     ifrm.setAttribute('allowtransparency','true');
-    
+
     var textOut = document.createElement('p');
     textOut.setAttribute('class','desc');
     textOut.setAttribute('id', 'insert');
@@ -25,4 +25,4 @@ socket.on('done', function(data){
     document.getElementById('insert').innerHTML = "Here's the playlist generated for you and your friends.";
     replace.parentNode.insertBefore(ifrm, replace);
     replace.parentNode.removeChild(replace);
-})
+});
