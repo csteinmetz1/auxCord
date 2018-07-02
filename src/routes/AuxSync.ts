@@ -3,7 +3,6 @@ import { GetMatches } from "../util/Combine";
 
 
 import {
-  setAccessToken,
   createSpotifyPlaylist
 } from "../util/SpotifyConnector";
 import { io } from "../Server";
@@ -18,9 +17,8 @@ function CreateCombinedPlaylist(userA: UserModel, userB: UserModel, access_token
 
   console.log("creating playlist");
 
-  setAccessToken(req.session.access_token);
   return createSpotifyPlaylist(userB, userA, access_token, matches)
-    .then((newPlaylistId: number) => {
+    .then((newPlaylistId: string) => {
 
       console.log("created playlist");
       console.log("Users are", percent_match, "% match.");
@@ -62,13 +60,12 @@ export let auxsync = (req: Request, res: Response) => {
     // do not save this model to the database, or the auxId will expire
     return addUsersTracks(
       new UserModel({
-        userId: req.session.id,
+        userId: req.session.user_id,
         auxId: userA.auxId,
         display_name: req.session.display_name
       }),
       req
     ).then((userB) => {
-      setAccessToken(req.session.access_token);
       return CreateCombinedPlaylist(userA, userB, req.session.access_token, req, res);
     });
   });

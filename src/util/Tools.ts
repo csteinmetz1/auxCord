@@ -1,6 +1,3 @@
-import { setAccessToken } from "./SpotifyConnector";
-// import { TrackTable } from "../models/User"
-
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string

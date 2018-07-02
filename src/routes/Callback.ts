@@ -2,7 +2,7 @@ import { stateKey } from "./../App";
 import { stringify } from "querystring";
 import { redirect_uri, client_id, client_secret } from "../util/secrets";
 import * as request from "request";
-import { setAccessToken, getUserId, } from "../util/SpotifyConnector";
+import { getUserId, } from "../util/SpotifyConnector";
 
 import { Request, Response } from "express";
 
@@ -53,7 +53,6 @@ export let callback = (req: Request, res: Response) => {
         });
 
       req.session.access_token = access_token; // set cookie
-      setAccessToken(access_token); // set library token
       console.log("Authenticated user.");
 
     } else {

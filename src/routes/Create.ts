@@ -1,4 +1,3 @@
-import { setAccessToken } from "../util/SpotifyConnector";
 import { addUsersTracks } from "../util/Gather";
 import { io } from "../Server";
 import { writeFile } from "fs";
@@ -11,7 +10,6 @@ import { getAuxId } from "../models/AuxId";
 
 
 export function create(req: Request, res: Response) {
-  setAccessToken(req.session.access_token);
 
   getAuxId().then((auxId) => {
     if (auxId !== "0" && !auxId) {

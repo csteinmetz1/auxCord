@@ -1,24 +1,8 @@
 import { client_id, client_secret, redirect_uri } from "../util/secrets";
-import request from "request";
+import * as request from "request";
 import { Response } from "express";
 
 import { UserModel } from "../models/User";
-
-
-const SpotifyWebApi = require("spotify-web-api-node");
-
-const spotifyApi = new SpotifyWebApi({
-  clientId: client_id,
-  clientSecret: client_secret,
-  redirectUri: redirect_uri
-});
-console.log({
-  clientId: client_id,
-  clientSecret: client_secret,
-  redirectUri: redirect_uri
-});
-console.log(spotifyApi);
-
 
 
 function Get(options: request.Options): Promise<any> {
@@ -30,11 +14,15 @@ function Get(options: request.Options): Promise<any> {
   });
 }
 
-
-////////////////////////////////////////////////////////////
-export function setAccessToken(access_token: string) {
-  spotifyApi.setAccessToken(access_token);
+function Post(options: request.Options): Promise<any> {
+  return new Promise((resolve, reject) => {
+    request.post(options, (error, response, body) => {
+      if (error) reject(error);
+      else resolve(body);
+    });
+  });
 }
+
 
 interface UserIdResult extends Promise<{
   id: string,
@@ -85,26 +73,59 @@ export function getUsersPlaylistTracks(access_token: string, userId: string, pla
   });
 }
 
+function createPlaylist(access_token: string, user_id: string, name: string, description: string) {
+  return Post({
+    url: "https://api.spotify.com/v1/users/" + user_id + "/playlists",
+    headers: {
+      "Authorization": "Bearer " + access_token,
+      "Content-Type": "application/json"
+    },
+    json: true,
+    body: {
+      name,
+      description
+    }
+  });
+}
+
+
+function addToPlaylist(access_token: string, user_id: string, playlist_id: string, uris: Array<string>) {
+  return Post({
+    url: "https://api.spotify.com/v1/users/" + user_id + "/playlists/" + playlist_id + "/tracks",
+    headers: {
+      "Authorization": "Bearer " + access_token,
+      "Content-Type": "application/json"
+    },
+    json: true,
+    body: {
+      uris
+    }
+  });
+}
+
+
+
 ////////////////////////////////////////////////////////////
 // makes spotify playlist under userB
 export function createSpotifyPlaylist(userB: UserModel, userA: UserModel, access_token: string, tracks: Array<string>) {
-  console.log("trying with...");
-  console.log(userB);
-  return spotifyApi.createPlaylist(userB.userId, "auxCord", {
-    "public": true,
-    "description": "Synced with " + userB.display_name + " and " + userA.display_name
-  }).then(
-    function(result: { body: { id: string } }) {
-      const playlistId = result.body.id;
+  // console.log("trying with...");
+  // console.log(userB);
+  return createPlaylist(
+    access_token,
+    userB.userId,
+    "auxCord",
+    "Synced with " + userB.display_name + " and " + userA.display_name
+  ).then((res: any) => {
+    const playlistId = res.id;
 
-      return spotifyApi.addTracksToPlaylist(userB.userId, playlistId, tracks).then(() => (
+    return addToPlaylist(access_token, userB.userId, playlistId, tracks)
+      .then(() => (
         playlistId
       )).catch((err: any) => {
         console.error("Error occured trying to add to playlist");
         console.error(err);
       });
-    }
-  ).catch((err: any) => {
+  }).catch((err: any) => {
     console.error("Failed to create playlist");
     console.error(err);
   });
