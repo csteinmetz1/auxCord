@@ -25,7 +25,7 @@ class Artist {
     this.weight = entries.length
       * pow(2.0, inBoth) // most important metric
       * pow(1.2, inA + inB) // if its in a or b it is kind of important
-      / pow(1.5, selectedSoFar); // becomes less than half as likely after each selection
+      / pow(5.0, selectedSoFar); // becomes less than half as likely after each selection
   }
 
   constructor(isect: IntersectKeys) {
