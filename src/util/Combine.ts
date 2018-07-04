@@ -1,6 +1,6 @@
 import { UserModel } from "../models/User";
 import { IntersectKeys } from "../models/TrackTable";
-
+import weightFunc from "./CombineParameters";
 
 class Artist {
   entries: Array<string>;
@@ -22,10 +22,7 @@ class Artist {
     const { entries, inA, inB, inBoth, selectedSoFar } = this;
     const { pow } = Math;
 
-    this.weight = entries.length
-      * pow(2.0, inBoth) // most important metric
-      * pow(1.2, inA + inB) // if its in a or b it is kind of important
-      / pow(5.0, selectedSoFar); // becomes less than half as likely after each selection
+    this.weight = entries.length * weightFunc(inBoth, inA + inB, selectedSoFar);
   }
 
   constructor(isect: IntersectKeys) {
