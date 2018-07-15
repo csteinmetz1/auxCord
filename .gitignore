@@ -3,3 +3,4 @@ keys.js
 keys.ts
 data/
 dist/
+.vscode/
