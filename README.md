@@ -19,11 +19,12 @@ to store your client_id and client_secret. You can get your own API keys by crea
 
 ```
 // Spotify API keys
-module.exports = {
-    client_id : 'YOUR_CLIENT_ID',
-    client_secret : 'YOUR_CLIENT_SECRET',
-    redirect_uri : 'YOUR_REDIRECT_URI'
-};
+const keys = {
+  clientId: 'YOUR_CLIENT_ID',
+  clientSecret: 'YOUR_CLIENT_SECRET',
+  redirectUri: 'YOUR_REDIRECT_URI' // should be 'localhost:8888' for testing
+}
+export default keys;
 ```
 
 Finally run the server.
@@ -36,11 +37,11 @@ Finally run the server.
 * Move .json file structure to some kind of database
 * Add Google Analytics
 * Allow users to choose whether to save playlists
-* Add CSS animations 
-* Improve CSS design for mobile 
+* Add CSS animations
+* Improve CSS design for mobile
 * Add tags for SEO
 * Extend data collection to recieve more than 50 playlists
 * Extend data collection to reviece more than 50 tracks per playlist
-* Fix socket.io socket management  
+* Fix socket.io socket management
 
 ### Won Best Cloud Based Hack at CUhackit 2018
