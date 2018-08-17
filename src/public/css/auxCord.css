@@ -1,30 +1,32 @@
 body {
-	/*background: linear-gradient(135deg ,#FAAC4D, #FA574D);*/
-	background-color: #FA574D;
+	background: linear-gradient(135deg ,#FAAC4D, #FA574D);
+	/*background-color: #FA574D;*/
 	font-family: 'Roboto', Helvetica, Arial;
 	text-align: center;
-	color: white;
+  color: white;
+  background-repeat: no-repeat;
+  height: 100vh;
 }
 .headText {
 	margin-top: 5%;
 	text-align: center;
 }
 .loginButton {
-	text-align: center;
+  text-align: center;
 }
-
 
 h1 {
 	font-weight: lighter;
 }
+
 .desc {
 	font-weight: lighter;
-	font-size: 20px;
+	font-size: 2.5vh;
 }
 
 img {
-	width: 500px;
-	height: 300px;
+  width: 80vw;
+  height: 50vh;
 }
 
 @-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
@@ -58,6 +60,29 @@ img {
 	animation-delay: 0.5s;
 }   
 
+@media only screen and (min-width : 1400px) {
+  /* For big screens */
+  img {
+    width: 50vw;
+    height: 50vh;
+  }
+
+  button {
+    background-color: Transparent;
+		border: 4px solid white;
+		color: white;
+		padding: 4px 12px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 64px;
+		-webkit-transition-duration: 0.4s; /* Safari */
+		transition-duration: 0.4s;
+		font-weight: lighter;
+		outline: none
+  }
+}
+
 @media only screen and (min-width : 320px) and (max-width : 800px) {
   /* For mobile phones: */
   h1 {
@@ -66,12 +91,17 @@ img {
     margin-bottom: 5px;
   }
 
+  img {
+    width: 90vw;
+    height: 50vh;
+  }
+
   .button:hover {
     cursor: pointer;
   }
 
 	.button {
-		background-color: #FA574D; /* Green */
+    background-color: Transparent;
 		border: 4px solid white;
 		color: white;
 		padding: 4px 12px;
@@ -88,10 +118,10 @@ img {
 }
 
 .button {
-	background-color: #FA574D; /* Green */
+	background-color: Transparent; /* Green */
 	border: 2px solid white;
 	color: white;
-	width:200px;
+  width: 50vw; /* 200px */
 	padding: 16px 16px; /*54.5px*/
 	margin-top: 5px;
 	margin-bottom: 5px;
@@ -100,7 +130,7 @@ img {
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
-	font-size: 24px;
+	font-size: 3vh;
 	-webkit-transition-duration: 0.4s; /* Safari */
 	transition-duration: 0.4s;
 	font-weight: lighter;
@@ -138,14 +168,17 @@ input {
   margin: 8px 0;
   box-sizing: border-box;
   border: none;
-  background-color: rgb(241, 115, 109);
+  background-color:rgba(255, 255, 255, 0.2);
 	color: white;
-	font-size: 24px;
+	font-size: 3vh;
 	text-align: center;
 	font-weight: lighter;
 }
 input:not([type=submit]) {
-	width: 200px;
+  width: 400px;
+  -webkit-user-select: none; /* Chrome/Safari */        
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+ */
 }
 
 input::-webkit-input-placeholder {
