@@ -57,6 +57,7 @@ var stateKey = 'spotify_auth_state';
 //CONVERSTION in server.ts??
 var app = express();
 app.set('view engine', 'ejs'); // setup ejs templating
+app.set('views', path.join(__dirname, '/views')); // set views directory
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
@@ -159,7 +160,7 @@ app.get('/callback', function (req, res) {
 ////////////////////////////////////////////////////
 function getNewAuxId() {
   let auxId = Math.floor(1000 + Math.random() * 9000);
-  while (fs.existsSync('data/' + auxId + '.json')) {
+  while (fs.existsSync('src/data/' + auxId + '.json')) {
     auxId = Math.floor(1000 + Math.random() * 9000);
   }
 
@@ -295,7 +296,7 @@ app.get('/create', function (req, res) {
         userData.socketId = socket.id;
 
         var data = JSON.stringify(userData);
-        fs.writeFile('data/' + userData.auxId + '.json', data, 'utf8', function (err) {
+        fs.writeFile('src/data/' + userData.auxId + '.json', data, 'utf8', function (err) {
           if (err) throw err;
         });
       });
@@ -354,7 +355,7 @@ function createSpotifyPlaylist(user, userA, access_token, tracks, maxEntries) {
 ////////////////////////////////////////////////////
 app.post('/aux_sync', function (req, res) {
   var auxId = req.body.auxId;
-  var filepath = 'data/' + auxId + '.json';
+  var filepath = 'src/data/' + auxId + '.json';
   if (fs.existsSync(filepath)) {
     // get user a data
     var userA = JSON.parse(fs.readFileSync(filepath, 'utf-8'));
@@ -398,9 +399,9 @@ app.post('/aux_sync', function (req, res) {
             per_match: per_match
           });
 
-          fs.unlink('data/' + auxId + '.json', function (err) {
+          fs.unlink('src/data/' + auxId + '.json', function (err) {
             if (err) throw err;
-            console.log('Deleted', 'data/' + auxId + '.json');
+            console.log('Deleted', 'src/data/' + auxId + '.json');
           });
         });
     });
