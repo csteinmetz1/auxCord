@@ -4,3 +4,5 @@ data/
 debug.log
 dist/
 .env
+Dockerfile
+docker-compose.yml
