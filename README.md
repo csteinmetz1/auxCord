@@ -2,9 +2,11 @@
 
 Sync Spotify accounts to build tailored playlists.
 
-![auxCord](brand/home_page.png)
+<img src="brand/home_page.png" alt="auxcord" width="800" >
 
-View the live site at [auxcord.io](http://auxcord.io)
+View the live site at [http://auxcord.io](http://auxcord.io)
+
+### [Won Best Cloud Based Hack at CUhackit 2018](https://devpost.com/software/auxcord)
 
 ## Setup
 
@@ -18,18 +20,25 @@ In order to authenticate with the Spotify API you need to create a file called `
 to store your client_id and client_secret. You can get your own API keys by creating a [Spotify app](https://developer.spotify.com/). Once you have your keys, add them to your file as shown below.
 
 ```
-// Spotify API keys
-const keys = {
-  clientId: 'YOUR_CLIENT_ID',
-  clientSecret: 'YOUR_CLIENT_SECRET',
-  redirectUri: 'YOUR_REDIRECT_URI' // should be 'localhost:8888' for testing
-}
-export default keys;
+/*
+   - Spotify API Keys -
+   Replace the strings with your corresponding values. 
+   We use redirect_uri of 'http://localhost:8888/callback' for local development. 
+*/
+var keys = {
+  client_id: 'CLIENT_ID',
+  client_secret: 'CLIENT_SECRET',
+  redirect_uri: 'REDIRECT_URI'
+};
+module.exports = keys;
 ```
 
 Finally run the server.
 
     $ node app.js
+  or
+
+    $ npm start
 
 ## To Do
 
@@ -44,4 +53,4 @@ Finally run the server.
 * Extend data collection to reviece more than 50 tracks per playlist
 * Fix socket.io socket management
 
-### Won Best Cloud Based Hack at CUhackit 2018
+
