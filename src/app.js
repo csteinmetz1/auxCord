@@ -1,51 +1,53 @@
 /**
  * auxCord
  * CUhackit 2018
- * March 10, 2018
+ * March 10 - 11, 2018
  */
 
-// Modules
+/* 
+    - Script Files
+*/
+var generateRandomString = require('./js/randomstring')
+
+/* 
+    - Modules
+*/ 
 var express = require('express'); // Express web server framework
-var request = require('request'); // "Request" library
-var querystring = require('querystring');
+var request = require('request'); // used for http requests
+var querystring = require('querystring'); 
 var cookieParser = require('cookie-parser');
 var session = require('client-sessions'); // store user data in cookies
-var fs = require('fs'); // filesystem
+var fs = require('fs'); // used to read and write to the local filesystem 
 var SpotifyWebApi = require('spotify-web-api-node'); // library for spotify endpoints
 var socket = require('socket.io'); // sockect connection to clients
-var bodyparser = require('body-parser'); // parse those bodies
-var favicon = require('serve-favicon'); // let's use a favicon
-var path = require('path');
+var bodyparser = require('body-parser'); // 
+var favicon = require('serve-favicon');
+var path = require('path'); //local path for filesystem read and writes
+var keys = require('./keys'); // Spotify API keys file
 
-//
-var keys = require('./keys'); // Spotify API keys
 
+/* 
+    - Constants
+*/
+//port used for the server
+const PORT = 8888;
 // Set API keys for custom resquests
-var client_id = keys.client_id;
-var client_secret = keys.client_secret;
-var redirect_uri = keys.redirect_uri;
+const client_id = keys.client_id;
+const client_secret = keys.client_secret;
+const redirect_uri = keys.redirect_uri;
 
-// Set API keys for the library
+// Initialize API keys for the webapi object
 var spotifyApi = new SpotifyWebApi({
   clientId: keys.client_id,
   clientSecret: keys.client_secret,
   redirectUri: keys.redirect_uri
 });
 
-/**
- * Generates a random string containing numbers and letters
- * @param  {number} length The length of the string
- * @return {string} The generated string
- */
-var generateRandomString = function (length) {
-  var text = '';
-  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+/*
+    - Functions
+*/
 
-  for (var i = 0; i < length; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
-};
+
 
 var stateKey = 'spotify_auth_state';
 
@@ -78,6 +80,7 @@ app.use(session({
 //passed in for state which is used for 
 app.get('/login', function (req, res) {
   var state = generateRandomString(16);
+  console.log(state);
   res.cookie(stateKey, state);
 
   // your application requests authorization
@@ -116,7 +119,7 @@ app.get('/callback', function (req, res) {
         grant_type: 'authorization_code'
       },
       headers: {
-        'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+        'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
       },
       json: true
     };
@@ -508,7 +511,7 @@ var getUsersPlaylistTracks = function (access_token, userId, playlistId) {
 };
 
 ////////////// Start server ////////////
-var server = app.listen(8888, function () {
-  console.log('auxCord listening on 8888');
+var server = app.listen(PORT, function () {
+  console.log('auxCord listening on ' + PORT);
 });
 var io = socket(server);

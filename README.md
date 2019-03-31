@@ -40,6 +40,15 @@ Finally run the server.
 
     $ npm start
 
+## Versioning
+
+  We will use the [w.x.y.z](https://stackoverflow.com/questions/396429/how-do-you-know-what-version-number-to-use) system.
+  
+  * w - Major version, with many new features. The first public release of software is 1.X (pre-release versions are 0.X)
+  * x - Significant release, but without groundbreaking new features
+  * y - Bugfix releases
+  * z - Patchlevel releases (fixing an emergency bug)
+
 ## To Do
 
 * Allow for more than two users to sync their accounts
