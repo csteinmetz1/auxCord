@@ -4,7 +4,7 @@
  * March 10, 2018
  */
 
-// core backend framework
+// Modules
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
@@ -17,7 +17,7 @@ var bodyparser = require('body-parser'); // parse those bodies
 var favicon = require('serve-favicon'); // let's use a favicon
 var path = require('path');
 
-/////////// MAKE SURE YOU HAVE THIS FILE /////////
+//
 var keys = require('./keys'); // Spotify API keys
 
 ////////////////////////////////////////////////////
@@ -345,7 +345,7 @@ function createSpotifyPlaylist(user, userA, access_token, tracks, maxEntries) {
         return tracks[randomIndex];
       });
 
-      return spotifyApi.addTracksToPlaylist(user.userId, playlistId, sampledTracks).catch((err) => {
+      return spotifyApi.addTracksToPlaylist(playlistId, sampledTracks).catch((err) => {
         console.log(err);
       });
     }
@@ -386,10 +386,6 @@ app.post('/aux_sync', function (req, res) {
           var max_matches = Math.min(userA.totalArtists, userB.totalArtists);
           var per_match = Math.floor((artistMatches / max_matches) * 100);
 
-          console.log("created playlist");
-          console.log("Users are", per_match, "% match.");
-
-
           io.to(userA.socketId)
             .emit("done", {
               playlistURL: "https://open.spotify.com/embed/user/" + userB.userId + "/playlist/" + userB.newPlaylistId,
@@ -400,6 +396,11 @@ app.post('/aux_sync', function (req, res) {
             playlistURL: "https://open.spotify.com/embed/user/" + userB.userId + "/playlist/" + userB.newPlaylistId,
             per_match: per_match
           });
+
+          console.log("https://open.spotify.com/embed/user/" + userB.userId + "/playlist/" + userB.newPlaylistId);
+
+          console.log("created playlist");
+          console.log("Users are", per_match, "% match.");
 
           fs.unlink(path.join(database, auxId + '.json'), function (err) {
             if (err) throw err;
