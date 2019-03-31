@@ -1,60 +1,57 @@
 /**
  * auxCord
  * CUhackit 2018
- * March 10, 2018
+ * March 10 - 11, 2018
  */
 
-// core backend framework
+/* 
+    - Script Files
+*/
+var generateRandomString = require('./js/randomstring')
+
+/* 
+    - Modules
+*/ 
 var express = require('express'); // Express web server framework
-var request = require('request'); // "Request" library
-var querystring = require('querystring');
+var request = require('request'); // used for http requests
+var querystring = require('querystring'); 
 var cookieParser = require('cookie-parser');
 var session = require('client-sessions'); // store user data in cookies
-var fs = require('fs'); // filesystem
+var fs = require('fs'); // used to read and write to the local filesystem 
 var SpotifyWebApi = require('spotify-web-api-node'); // library for spotify endpoints
 var socket = require('socket.io'); // sockect connection to clients
-var bodyparser = require('body-parser'); // parse those bodies
-var favicon = require('serve-favicon'); // let's use a favicon
-var path = require('path');
+var bodyparser = require('body-parser'); // 
+var favicon = require('serve-favicon');
+var path = require('path'); //local path for filesystem read and writes
+var keys = require('./keys'); // Spotify API keys file
 
-/////////// MAKE SURE YOU HAVE THIS FILE /////////
-var keys = require('./keys'); // Spotify API keys
 
-////////////////////////////////////////////////////
-//CONVERTED in keys
-////////////////////////////////////////////////////
+/* 
+    - Constants
+*/
+//port used for the server
+const PORT = 8888;
 // Set API keys for custom resquests
-var client_id = keys.client_id;
-var client_secret = keys.client_secret;
-var redirect_uri = keys.redirect_uri;
+const client_id = keys.client_id;
+const client_secret = keys.client_secret;
+const redirect_uri = keys.redirect_uri;
 
-// Set API keys for the library
+// Initialize API keys for the webapi object
 var spotifyApi = new SpotifyWebApi({
   clientId: keys.client_id,
   clientSecret: keys.client_secret,
   redirectUri: keys.redirect_uri
 });
-////////////////////////////////////////////////////
-//CONVERTED in Tools.ts
-////////////////////////////////////////////////////
-/**
- * Generates a random string containing numbers and letters
- * @param  {number} length The length of the string
- * @return {string} The generated string
- */
-var generateRandomString = function (length) {
-  var text = '';
-  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-  for (var i = 0; i < length; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
-};
+/*
+    - Functions
+*/
+
+
 
 var stateKey = 'spotify_auth_state';
-////////////////////// APP //////////////////////////
-//CONVERSTION in server.ts??
+
+
 var app = express();
 app.set('view engine', 'ejs'); // setup ejs templating
 app.set('views', path.join(__dirname, 'views')); // set views directory
@@ -83,6 +80,7 @@ app.use(session({
 //passed in for state which is used for 
 app.get('/login', function (req, res) {
   var state = generateRandomString(16);
+  console.log(state);
   res.cookie(stateKey, state);
 
   // your application requests authorization
@@ -96,11 +94,8 @@ app.get('/login', function (req, res) {
       state: state
     }));
 });
-//END UNCERTAINTY
 
-////////////////////////////////////////////////////
-//CONVERTED in routes/Callback.ts
-////////////////////////////////////////////////////
+//
 app.get('/callback', function (req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -124,7 +119,7 @@ app.get('/callback', function (req, res) {
         grant_type: 'authorization_code'
       },
       headers: {
-        'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+        'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
       },
       json: true
     };
@@ -157,9 +152,7 @@ app.get('/callback', function (req, res) {
 });
 
 
-////////////////////////////////////////////////////
-//CONVERTED in Data.ts
-////////////////////////////////////////////////////
+
 function getNewAuxId() {
   let auxId = Math.floor(1000 + Math.random() * 9000);
   while (fs.existsSync(database + auxId + '.json')) {
@@ -170,10 +163,8 @@ function getNewAuxId() {
   return auxId;
 }
 
-////////////////////////////////////////////////////
-//CONVERTED in Tools.ts
-////////////////////////////////////////////////////
-// I think we only care about the track uri, this will have to change otherwise
+
+
 function transformTracks(tracks) {
   // tracks are stored in a hash table
   // Note: there is no length attribute though.
@@ -192,17 +183,13 @@ function transformTracks(tracks) {
   };
   return trackTable;
 }
-////////////////////////////////////////////////////
-//CONVERTED in Tools.ts
-////////////////////////////////////////////////////
+
 function mergeTracks(a, b) {
   return Object.assign(a, b);
 }
 
 
-////////////////////////////////////////////////////
-//CONVERTED in Gather.ts
-////////////////////////////////////////////////////
+
 function getUserData(req) {
   var userData = {
     userId: req.session.user_id,
@@ -283,9 +270,7 @@ function getUserData(req) {
   });
 }
 
-////////////////////////////////////////////////////
-//CONVERTED in routes/Create.ts
-////////////////////////////////////////////////////
+
 app.get('/create', function (req, res) {
   spotifyApi.setAccessToken(req.session.access_token);
   getUserData(req).then(
@@ -304,16 +289,13 @@ app.get('/create', function (req, res) {
       });
     });
 });
-////////////////////////////////////////////////////
-//CONVERTED in routes/Join.ts
-////////////////////////////////////////////////////
+
+
 app.get('/join', function (req, res) {
   res.redirect('/join.html');
 });
 
-////////////////////////////////////////////////////
-//CONVERTED in Tools.ts
-////////////////////////////////////////////////////
+
 function uniqueRandomIndices(needed, totalSize) {
   var values = [];
 
@@ -329,9 +311,7 @@ function uniqueRandomIndices(needed, totalSize) {
   return values;
 }
 
-////////////////////////////////////////////////////
-//CONVERTED in SpotifyConnector.ts
-////////////////////////////////////////////////////
+
 function createSpotifyPlaylist(user, userA, access_token, tracks, maxEntries) {
   return spotifyApi.createPlaylist(user.userId, 'auxCord', {
     'public': true,
@@ -345,16 +325,14 @@ function createSpotifyPlaylist(user, userA, access_token, tracks, maxEntries) {
         return tracks[randomIndex];
       });
 
-      return spotifyApi.addTracksToPlaylist(user.userId, playlistId, sampledTracks).catch((err) => {
+      return spotifyApi.addTracksToPlaylist(playlistId, sampledTracks).catch((err) => {
         console.log(err);
       });
     }
   );
 }
 
-////////////////////////////////////////////////////
-//CONVERTING in routes/AuxSync.ts
-////////////////////////////////////////////////////
+
 app.post('/aux_sync', function (req, res) {
   var auxId = req.body.auxId;
   var filepath = path.join(database, auxId + '.json');
@@ -386,10 +364,6 @@ app.post('/aux_sync', function (req, res) {
           var max_matches = Math.min(userA.totalArtists, userB.totalArtists);
           var per_match = Math.floor((artistMatches / max_matches) * 100);
 
-          console.log("created playlist");
-          console.log("Users are", per_match, "% match.");
-
-
           io.to(userA.socketId)
             .emit("done", {
               playlistURL: "https://open.spotify.com/embed/user/" + userB.userId + "/playlist/" + userB.newPlaylistId,
@@ -401,6 +375,11 @@ app.post('/aux_sync', function (req, res) {
             per_match: per_match
           });
 
+          console.log("https://open.spotify.com/embed/user/" + userB.userId + "/playlist/" + userB.newPlaylistId);
+
+          console.log("created playlist");
+          console.log("Users are", per_match, "% match.");
+
           fs.unlink(path.join(database, auxId + '.json'), function (err) {
             if (err) throw err;
             console.log('Deleted', path.join(database, auxId + '.json'));
@@ -410,16 +389,19 @@ app.post('/aux_sync', function (req, res) {
   }
   else {
     console.log(filepath + ' Not Found! ' + 'No aux found with given auxId!')
-    res.redirect('/join.html');
-    //io.on('connection', function (socket) {
-    //  io.to(socket.id).emit("error", auxId + " is not a valid aux!");
-    //  console.log('Invalid aux.')
-    //});
+    
+    io.on('connection', function (socket) {
+      io.to(socket.id).emit("error", {error_text: auxId + " is not a valid aux!"});
+      console.log('Invalid aux.')
+    });
+
+    res.render('error.ejs', {
+      error_text: auxId +  " is not a valid aux code."
+    });
   }
 });
-////////////////////////////////////////////////////
-//CONVERTING in RefreshToken.ts
-////////////////////////////////////////////////////
+
+
 app.get('/refresh_token', function (req, res) {
 
   // requesting access token from refresh token
@@ -529,7 +511,7 @@ var getUsersPlaylistTracks = function (access_token, userId, playlistId) {
 };
 
 ////////////// Start server ////////////
-var server = app.listen(8888, function () {
-  console.log('auxCord listening on 8888');
+var server = app.listen(PORT, function () {
+  console.log('auxCord listening on ' + PORT);
 });
 var io = socket(server);
