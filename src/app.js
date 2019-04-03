@@ -383,6 +383,7 @@ app.post('/aux_sync', function (req, res) {
     // get user a data
     //var userA = JSON.parse(fs.readFileSync(filepath, 'utf-8'));
     var userA;
+    console.log(auxId);
     db_functions.get({auxId: Number(auxId)}).then(value => {
       userA =  value;
       //console.log(value);

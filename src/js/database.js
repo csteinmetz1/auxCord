@@ -56,9 +56,6 @@ function get(input) {
       let  dbo = db.db("auxcord");
       dbo.collection("auxCords").findOne(input, function(err, result) {
         if(err)  reject(err);
-        if(result.length == 0) {
-          reject("No results found for " + JSON.stringify(input) + ".");
-        }
         else {
           //console.log(result);
           resolve(result);
