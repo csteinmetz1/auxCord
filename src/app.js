@@ -8,7 +8,7 @@
     - Script Files
 */
 var generateRandomString = require('./js/randomstring')
-
+var db_functions = require('./js/database');
 /* 
     - Modules
 */ 
@@ -26,15 +26,18 @@ var path = require('path'); //local path for filesystem read and writes
 var keys = require('./keys'); // Spotify API keys file
 
 
+
 /* 
     - Constants
 */
 //port used for the server
 const PORT = 8888;
-// Set API keys for custom resquests
+// Set Spotify API keys for custom resquests
 const client_id = keys.client_id;
 const client_secret = keys.client_secret;
 const redirect_uri = keys.redirect_uri;
+//mlab mongodb uri
+const remote_db = true;
 
 // Initialize API keys for the webapi object
 var spotifyApi = new SpotifyWebApi({
@@ -47,7 +50,22 @@ var spotifyApi = new SpotifyWebApi({
     - Functions
 */
 
+//var test_json = { auxId: Number('8026')};
 
+//db_functions.test_connection();
+//db_functions.query(test_json);
+/*
+db_functions.get(test_json).then(value => {
+  test_json =  value;
+  //console.log(test_json);
+  console.log(test_json.userId);
+  //let test2 = JSON.parse(JSON.stringify(test_json));
+  //console.log(test_json);
+}, reason => {
+  console.log(reason);
+});
+*/
+//db_functions.query(test_json);
 
 var stateKey = 'spotify_auth_state';
 
@@ -155,9 +173,30 @@ app.get('/callback', function (req, res) {
 
 function getNewAuxId() {
   let auxId = Math.floor(1000 + Math.random() * 9000);
+  let exists = true;
+
+  let auxMap = {};
+  db_functions.auxId_check().then( value => {
+      for(i=0; i < value.length; i++) {
+      auxMap[value[i].auxId] = value[i].auxId;
+      }
+      while(exists) {
+        if(auxMap[auxId] != null) {
+          auxId = Math.floor(1000 + Math.random() * 9000);
+        }
+        else {
+          exists = false;
+        }
+      }
+    }, reason => {
+      console.log(reason);
+    }
+  )
+  /*
   while (fs.existsSync(database + auxId + '.json')) {
     auxId = Math.floor(1000 + Math.random() * 9000);
   }
+  */
 
   console.log('Creating new aux', auxId);
   return auxId;
@@ -283,9 +322,13 @@ app.get('/create', function (req, res) {
         userData.socketId = socket.id;
 
         var data = JSON.stringify(userData);
+        /*
         fs.writeFile(path.join(database, userData.auxId + '.json'), data, 'utf8', function (err) {
           if (err) throw err;
         });
+        */
+        db_functions.insert(userData);
+      
       });
     });
 });
@@ -336,9 +379,17 @@ function createSpotifyPlaylist(user, userA, access_token, tracks, maxEntries) {
 app.post('/aux_sync', function (req, res) {
   var auxId = req.body.auxId;
   var filepath = path.join(database, auxId + '.json');
-  if (fs.existsSync(filepath)) {
+  if (remote_db || fs.existsSync(filepath)) {
     // get user a data
-    var userA = JSON.parse(fs.readFileSync(filepath, 'utf-8'));
+    //var userA = JSON.parse(fs.readFileSync(filepath, 'utf-8'));
+    var userA;
+    db_functions.get({auxId: Number(auxId)}).then(value => {
+      userA =  value;
+      //console.log(value);
+      }, reason => {
+      console.log(reason);
+      }
+    );
 
     getUserData(req).then(function (userB) {
 
@@ -380,10 +431,12 @@ app.post('/aux_sync', function (req, res) {
           console.log("created playlist");
           console.log("Users are", per_match, "% match.");
 
+          /*
           fs.unlink(path.join(database, auxId + '.json'), function (err) {
             if (err) throw err;
             console.log('Deleted', path.join(database, auxId + '.json'));
           });
+          */
         });
     });
   }

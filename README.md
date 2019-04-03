@@ -24,11 +24,13 @@ to store your client_id and client_secret. You can get your own API keys by crea
    - Spotify API Keys -
    Replace the strings with your corresponding values. 
    We use redirect_uri of 'http://localhost:8888/callback' for local development. 
+   We are using mlab for our db but the uri below just needs to be for your mongodb database.
 */
 var keys = {
   client_id: 'CLIENT_ID',
   client_secret: 'CLIENT_SECRET',
-  redirect_uri: 'REDIRECT_URI'
+  redirect_uri: 'REDIRECT_URI',
+  mlab_db_uri: 'DATABSE_CONNECTION_URI'
 };
 module.exports = keys;
 ```
